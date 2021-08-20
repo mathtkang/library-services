@@ -19,11 +19,13 @@
                     },
                     success:function(res){
                         if(res['result'] == 'success'){
-                            alert("로그인 성공");
-                            window.location.href = '/' 
+                            window.location.href = '/index.html' 
                         } else {
-                            alert("로그인 실패")
-                            window.location.reload() 
+                            if (confirm("해당 아이디가 없습니다. 회원가입하시겠습니까?")) { //예 버튼 클릭시
+                                window.location.href = '/register.html'
+                            } else { //아니요 버튼 클릭시
+                                window.location.reload() 
+                            }
                         }
                     }
                 })
@@ -34,11 +36,9 @@
                 <h2>Elice Library</h2>
                 <div class="form-control">
                     <input type="text" id="username" placeholder="아이디" />
-                    <!-- <small>Error message</small> -->
                 </div>
                 <div class="form-control">
                     <input type="text" id="email" placeholder="비밀번호"/>
-                    <!-- <small>Error message</small> -->
                 </div>
                 <div>
                     <button class="submit" type="submit">로그인</button>
@@ -46,10 +46,10 @@
                 <!-- 체크박스 구현 -->
                 <div class="checkbox">
                     <input type="checkbox" name="check2" id="check2" value="2" class="checkbox2">
-                    <label for="check2">로그인 상태 유지</label>
+                    <label class="check2" for="check2">로그인 상태 유지</label>
                 </div>
                 <!-- 아래 언더바 밑으로 -->
-                <div>
+                <div class="link">
                     <a target="" href="#" class="idinquiry">아이디 찾기</a>
                     <span class="bar">|</span>
                     <a href="#" class="pwinquiry">비밀번호 찾기</a>
@@ -60,7 +60,5 @@
     
             </form>
         </div>
-    
-        <script src="../static/script_login.js"></script>
     </body>
     </html>
