@@ -1,18 +1,29 @@
 import pymysql
 from flask import Flask, render_template
-from api import board
 from db_connect import db
 from flask_bcrypt import Bcrypt
+import config
 
-app = Flask(__name__)
-app.register_blueprint(board)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:devpass@127.0.0.1:3306/elice_flask_board"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.secret_key = 'asodfajsdofijac'
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(config)
 
-db.init_app(app)
-bcrypt = Bcrypt(app)
+    # ORM
+    db.init_app(app)
+    bcrypt = Bcrypt(app)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+    # 블루프린트
+    from views import main_view, sub_view
+    app.register_blueprint(main_view.bp)
+    app.register_blueprint(sub_view.bp)
+
+    # 세션 사용시
+    app.secret_key = "asdfasdfasdf"
+    app.config['SESSION_TYPE'] = 'filesystem'
+
+    return app
+
+
+if __name__ == "__main__":
+    create_app().run(debug=True, port=1234)

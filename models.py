@@ -1,100 +1,85 @@
 from db_connect import db
+from datetime import datetime
 
 '''
-model.py
-이 파일은 데이터베이스의 제약 조건을 명시하는 파일입니다.
-관계형 데이터베이스의 데이터를 객체랑 연결 시켜주는 것을 ORM (Object Relational Mapping) 이라고 불러요.
-즉, 이 파일은 외부에 존재하는 DB를 서버에서 사용하기 위해, DB와 동일한 제약조건을 객체에 걸어버리는 겁니다.
-
-데이터를 다룰 목적으로 만든 파이썬 클래스
+[데이터베이스 제약 조건 명시 파일]
+관계형 데이터베이스의 데이터를 객체랑 연결 시켜주는 것을 ORM (Object Relational Mapping)이라 한다.
+즉, 외부에 존재하는 DB를 서버에서 사용하기 위해, DB와 동일한 제약조건을 객체에 부여하는 파일이다.
 
 '''
 
 
-class libraryUser(db.Model):
-
-    # 테이블 이름입니다. 객체 이름과 달라도 되지만, 외부 테이블의 이름이 되기 때문에 유의해서 설정하세요.
+class LibraryUser(db.Model):
+    # 테이블명 : 객체 이름과 달라도 되지만, 외부 테이블에서 호출시 이름으로 사용(소문자로 시작)
     __tablename__ = 'libraryUser'
 
-    id = db.Column(db.String(20), primary_key=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
     email = db.Column(db.String(255), nullable=False)
     password = db.Column(db.String(255), nullable=False)
     name = db.Column(db.String(20), nullable=False)
 
-    def __init__(self, id, password, nickname, telephone):
+    def __init__(self, id, email, passeword, name):
         self.id = id
         self.email = email
         self.password = password
         self.name = name
 
 
-class rabbitStore(db.Model):
+class LibraryBook(db.Model):
+    # 책 소개 데이터
+    __tablename__ = 'libraryBook'
 
-    __tablename__ = 'rabbitStore'
-
-    id = db.Column(db.Integer, primary_key=True,
-                   nullable=False, autoincrement=True)
-    name = db.Column(db.String(20), nullable=False)
-    location = db.Column(db.String(50))
-    rating = db.Column(db.Integer)
-    open_time = db.Column(db.String(5))
-    close_time = db.Column(db.String(5))
-    stars = db.Column(db.Integer)
-    thumbnail = db.Column(db.String(255))
-    user_id = db.Column(db.String(20), db.ForeignKey('rabbitUser.id'))
-
-
-class rabbitMenu(db.Model):
-
-    __tablename__ = 'rabbitMenu'
-
-    id = db.Column(db.Integer, primary_key=True,
-                   nullable=False, autoincrement=True)
-    food_name = db.Column(db.String(20), nullable=False)
-    # 외부키를 사용할 때는 '테이블 이름.속성' 을 사용해야 합니다. 객체 이름이 아니에요!
-    store_id = db.Column(db.Integer, db.ForeignKey('rabbitStore.id'))
-    description = db.Column(db.String(255))
-    price = db.Column(db.Integer, nullable=False)
-    thumbnail = db.Column(db.String(255))
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    book_name = db.Column(db.String(255), nullable=False)
+    publisher = db.Column(db.String(255), nullable=False)
+    author = db.Column(db.String(255), nullable=False)
+    publication_date = db.Column(db.Date, nullable=False)
+    pages = db.Column(db.Integer, nullable=False)
+    isbn = db.Column(db.Integer, nullable=False)
+    description = db.Column(db.Text(), nullable=False)
+    star = db.Column(db.Integer, nullable=False)
+    img_link = db.Column(db.String(255), nullable=False)
+    remaining = db.Column(db.Integer, nullable=False)
+    # rental_val = db.Column(db.Integer, nullable=False)
 
 
-class rabbitReview(db.Model):
+class LibraryReview(db.Model):
+    # 책 소개 페이지 - 댓글 데이터
+    __tablename__ = 'libraryReview'
 
-    __tablename__ = 'rabbitReview'
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    user_name = db.Column(db.String(255), nullable=False)
+    user_email = db.Column(db.String(255), nullable=False)
+    content = db.Column(db.Text(), nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+    book_id = db.Column(db.Integer, db.ForeignKey(
+        'libraryBook.id'), nullable=False)
+    write_time = db.Column(db.DateTime, nullable=False)
+    user_email_code = db.Column(db.String(255), nullable=False)
 
-    id = db.Column(db.Integer, primary_key=True,
-                   nullable=False, autoincrement=True)
-    user_id = db.Column(db.Integer, db.ForeignKey(
-        'rabbitUser.id'), nullable=False)
-    store_id = db.Column(db.Integer, db.ForeignKey(
-        'rabbitStore.id'), nullable=False)
-    rating = db.Column(db.Float)
-    content = db.Column(db.Text())
-
-
-# from datetime import datetime
-
-
-# class User(db.Model):
-#     __tablename__ = 'user'
-#     id = db.Column(db.Integer,  primary_key=True,
-#                    nullable=False, autoincrement=True)
-#     user_id = db.Column(db.String(100), nullable=False, unique=True)
-#     user_pw = db.Column(db.String(100), nullable=False)
-
-#     def __init__(self, user_id, user_pw):
-#         self.user_id = user_id
-#         self.user_pw = user_pw
+    def __init__(self, user_name, user_email, content, rating, book_id, write_time, user_email_code):
+        self.user_name = user_name
+        self.user_email = user_email
+        self.content = content
+        self.rating = rating
+        self.book_id = book_id
+        self.write_time = write_time
+        self.user_email_code = user_email_code
 
 
-# class Post(db.Model):
-#     __tablename__ = 'post'
-#     id = db.Column(db.Integer,  primary_key=True,
-#                    nullable=False, autoincrement=True)
-#     author = db.Column(db.String(256), nullable=False)
-#     content = db.Column(db.Text(), nullable=False)
-#     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+class RentalBook(db.Model):
 
-#     def __init__(self, author, content):
-#         self.author = author
-#         self.content = content
+    __tablename__ = 'rentalBook'
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    user_email = db.Column(db.Integer, nullable=False)
+    book_id = db.Column(db.Integer, db.ForeignKey(
+        'libraryBook.id'), nullable=False)
+    rental_date = db.Column(db.Date, nullable=False)
+    book_data = db.relationship(
+        'LibraryBook', foreign_keys='RentalBook.book_id')
+
+    def __init__(self, user_email, book_id, rental_date):
+        self.user_email = user_email
+        self.book_id = book_id
+        self.rental_date = rental_date
