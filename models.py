@@ -18,11 +18,10 @@ class LibraryUser(db.Model):
     password = db.Column(db.String(255), nullable=False)
     name = db.Column(db.String(20), nullable=False)
 
-    def __init__(self, id, email, passeword, name):
-        self.id = id
+    def __init__(self, name, email, passeword):
+        self.name = name
         self.email = email
         self.password = password
-        self.name = name
 
 
 class LibraryBook(db.Model):

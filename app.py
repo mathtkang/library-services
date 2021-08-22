@@ -14,11 +14,10 @@ def create_app():
     bcrypt = Bcrypt(app)
 
     # 블루프린트
-    from views import main_view, sub_view
+    from views import main_view
     app.register_blueprint(main_view.bp)
-    app.register_blueprint(sub_view.bp)
 
-    # 세션 사용시
+    # 세션 사용을 위해서
     app.secret_key = "asdfasdfasdf"
     app.config['SESSION_TYPE'] = 'filesystem'
 
@@ -26,4 +25,4 @@ def create_app():
 
 
 if __name__ == "__main__":
-    create_app().run(debug=True, port=1234)
+    create_app().run(debug=True, port=5000)
