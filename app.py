@@ -1,7 +1,5 @@
-import pymysql
-from flask import Flask, render_template
+from flask import Flask
 from db_connect import db
-from flask_bcrypt import Bcrypt
 import config
 
 
@@ -9,13 +7,16 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(config)
 
-    # ORM
     db.init_app(app)
-    bcrypt = Bcrypt(app)
 
     # 블루프린트
-    from views import main_view
-    app.register_blueprint(main_view.bp)
+    from views import book_detail_api, book_list_api, main_api, rental_api, return_book_api, user_api
+    app.register_blueprint(book_detail_api.bp)
+    app.register_blueprint(book_list_api.bp)
+    app.register_blueprint(main_api.bp)
+    app.register_blueprint(rental_api.bp)
+    app.register_blueprint(return_book_api.bp)
+    app.register_blueprint(user_api.bp)
 
     # 세션 사용을 위해서
     app.secret_key = "asdfasdfasdf"
