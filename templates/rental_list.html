@@ -1,0 +1,79 @@
+{% extends "_base.html" %}
+
+{% block title %}도서 대여 기록 페이지{% endblock %}
+
+{% block scripts %}
+<script>
+function return_book(book_id) {
+    $.ajax({
+        url:'/returnBook',
+        type:'get',
+        data:{
+            'book_id':book_id
+        },
+        success: function(res) {
+            if(res['result'] == 'success') {
+                alert("반납 완료!")
+                window.location.href = '/main.html'
+            // } else if(res['result'] == 'fail') {
+            //     alert("")
+            //     window.location.href = '/'
+            } else{
+                window.location.href = '/'
+            }
+        }
+    })
+}
+</script>
+{% endblock %}
+
+
+{% block content %}
+
+<h2>도서 대여 기록 페이지</h2>
+<h2>마이 페이지</h2>
+
+
+<!-- main_view.py에서 선언해줌 -->
+<!-- rental_list = RentalBook.query.filter(
+        RentalBook.user_email == session['user_email']).all()  -->
+
+
+<div>
+<!-- 대여기록 테이블로 표현 -->
+<table class="table" style="width:85%; height:100%;margin-left:100px;">
+    <thead>
+        <tr>
+            <th>No.</th>
+            <th>책 사진</th>
+            <th>책 제목</th>
+            <th>대여일자</th>
+            <th>대여횟수</th>
+            <th>반납일자</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in rental_list %}
+        <!-- (app.py) rental_list = RentalBook.query.filter(RentalBook.user_email == session['user_email']).all() -->
+        <!-- (models.py) book_data = db.relationship('LibraryBook', foreign_keys='RentalBook.book_id') -->
+        <tr>
+            <td>{{book.book_data.id}}</td>
+            <td>{{book.book_data.img_link}}</td>
+            <td>{{book.book_data.book_name}}</td>
+            <td>{{book.rental_date}}</td>
+            <td>{{book.book_data.rental_val}}</td>
+            <!-- 반납일자가 있으면 반납 일자를 보여주고,
+            없다면, 반납하기 버튼을 출력-->
+            {% if book.return_date %}
+                <td>{{book.return_date}}</td>
+            {% else %}
+                <td><button onclick="return_book('{{book.book_id}}')">반납하기</button></td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,27 @@
+<nav class="navbar navbar-light bg-light static-top">
+    <div class="container">
+        <!-- <a class="navbar-brand" href="main.html">Elice Library</a>
+        <a class="btn btn-primary" href="#">회원가입</a> -->
+    
+        <ul>
+            {% if session['user_id'] %}
+                <li class="nav-item">
+                    <span class="nav-link" style="color: white;">안녕하세요! {{ session['nickname'] }} 님!</span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.logout') }}">로그아웃</a>               
+                </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.mypage') }}">마이페이지</a>               
+                </li> -->
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.register') }}">회원가입</a>               
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.login') }}">로그인</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>

@@ -1,1 +1,92 @@
 <!-- 첫 홈페이지 화면 -->
+
+{% extends "_base.html" %}
+
+{% block title %}전체 도서 열람 페이지{% endblock %}
+
+{% block script %}
+<script>
+    function rental_book(librarybook_id){
+        $.ajax({
+        url:'/rentalBook',
+        type:'get',
+        data:{
+            'book_id':librarybook_id
+        },
+        success: function(res) {
+            if(res['result'] == 'success') {
+                if (confirm('대여가 완료되었습니다. 대여목록으로 이동하시겠습니까?')){ return window.location.href = '/rental_list'} else { window.location.href = '/' }
+            } else if (res['result'] == 'fail'){
+                alert("재고가 없어서 대여할 수 없습니다. 다른 책을 대여해주세요.")
+                window.location.href = '/'
+            } else if (res['result'] == 'already'){
+                alert("이미 대여한 책 입니다. 마이페이지에서 확인해주세요.")
+                window.location.href = '/rental_list'
+            // } else if (res['result'] == 'full'){
+            //     alert("대여 가능 권수를 초과했습니다. 대여 중인 책을 반납 후 이용해주세요.")
+            }
+        }
+    })
+    }
+
+</script>
+{% endblock %}
+
+{% extends "_header.html" %}
+
+{% block content %}
+
+<h2>엘리스 책 목록</h2>
+<h2>전체 도서 열람 페이지</h2>
+
+{% if book_list %}
+{% for book in book_list.items %}
+<div>
+    <div>
+        <!-- api 이름! book_detail페이지로 이동 -->
+        <!-- <a href="{{ url_for('main.book_detail', book_id=) }}"> -->
+            <img class="" src="../static/img/{{ book.img_lick }}.jpg" alt="{{book.book_name}}" style="height:550px;width:430px;">
+        <!-- </a> -->
+    </div>
+    <div>
+        <table class="book_list" style="width:85%; height:100%;margin-left:100px;">
+            <tr>
+                <th>책 이름</th>
+                <td>{{book.book_name}}</td>
+            </tr>
+            <tr>
+                <th>저자</th>
+                <td>{{book.author}}</td>
+            </tr>
+            <tr>
+                <th>평점</th>
+                <td>
+                    {% for _ in range(book.star) %}
+                        <i class="bi bi-star-fill" style="color: red;">*</i>
+                    {% endfor %}
+                    {% for _ in range(5 - book.star) %}
+                        <i class="bi bi-star" style="color: gray;">*</i>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <th>대여 가능 여부</th>
+                {% if book.remaining == 0 %}
+                    <td style="color: red;">현재 대여가 불가능합니다.</td>
+                {% else %}
+                    <td>{{book.remaining}}권 남아있습니다.</td>
+                {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <button onclick="rental_book('{{book.id}}')">대여하기</button>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+
+
+
+{% endblock %}

@@ -1,110 +1,158 @@
-{% extends 'base.html' %}
+{% extends "_base.html" %}
 
-{% block scripts %}
+{% block title %}책 소개 페이지{% endblock %}
+
+{% block script %}
 <script>
-function postContent() {
-    let content = $("#my-content").val()
-    let author = `{{g.user.user_id}}`
-    $.ajax({
-        url : '/post',
-        type : 'post',
-        data : {
-            'content' : content,
-            'author' : author
-        },
-        success : function(res){
-            let result = res['result']
-            
-            if(result =result == "success"){
-                window.location.reload()
-            } else {
-                alert("저장오류!")
-            }
-        }
-    })
-}
-
-function deletePost(id) {
-    let author = `{{g.user.user_id}}`
-    $.ajax({
-        url: '/post',
-        type: 'DELETE',
-        data: {
-            'id': id,
-            'author': author
-        },
-        success: function (res) {
-            if (res['result'] == 'success') {
-                alert("삭제 성공!")
-                window.location.href = '/'
-            } else {
-                alert("삭제 실패!")
-            }
-        }
-    })
-}
-function postUpdatePost(id) {
-    let content = $(`#userEidContent${id}`).val()
-    $.ajax({
-        url: '/post',
-        type: 'PATCH',
-        data: {
-            "id": id,
-            "content": content
-        },
-        success: function (res) {
-            if (res['result'] == 'success') {
-                alert("수정성공")
-                window.location.href = '/'
-            }
-        }
-    })
-}
-function updatePost(id) {
-    let content = $(`#userContent${id}`).text()
-    let tmpHtml = `<textarea id=userEidContent${id}  class="form-control" rows="3"></textarea>`
-    let tmpBtn = `<button class="btn btn-sm btn-success" onclick="postUpdatePost(${id})">수정완료</button>`
-    $("#edit-area").empty()
-    $("#edit-area").append(tmpHtml)
-    $(`#editBtn${id}`).hide()
-    $(`#userEidContent${id}`).val(content)
-    $("#edit-area").append(tmpBtn)
-}
+// function return_book(book_id) {
+//     $.ajax({
+//         url:'/writeReview/',
+//         type:'post',
+//         data:{
+//             'book_id':book_id
+//         },
+//         success: function(res) {
+//             if(res['result'] == 'success') {
+//                 alert("댓글 작성 완료!")
+//                 book_id = 
+//                 window.location.href = '/bookDetail' + book_id
+//             } else{
+                
+//             }
+//         }
+//     })
+// }
 </script>
 {% endblock %}
 
 {% block content %}
-<h2 class="title">Elice 타임라인</h2>
-<hr>
-<div class="card">
-    <h5 class="card-header">새 글 작성</h5>
-    <div class="card-body">
-        <div class="mb-3">
-            <label class="form-label">{{g.user.user_id}}님, 글을 작성하세요</label>
-            <textarea id='my-content' class="form-control" rows="3"></textarea>
-        </div>
-    <button class="btn btn-primary" onclick="postContent()">작성하기</button>
+<h2>책 소개 페이지</h2>
+
+<div>
+    <div>
+        <img class="" src="../static/img/{{ book_detail.img_lick }}.jpg" alt="{{book_detail.book_name}}" style="height:550px;width:430px;">
+    </div>
+    <div>
+        <table class="book_detail" style="width:85%; height:100%;margin-left:100px;">
+            <tr>
+                <th>책 이름</th>
+                <td>{{book_detail.book_name}}</td>
+            </tr>
+            <tr>
+                <th>출판사</th>
+                <td>{{book_detail.publisher}}</td>
+            </tr>
+            <tr>
+                <th>저자</th>
+                <td>{{book_detail.author}}</td>
+            </tr>
+            <tr>
+                <th>출간일</th>
+                <td>{{book_detail.publication_date}}</td>
+            </tr>
+            <tr>
+                <th>페이지 수</th>
+                <td>{{book_detail.pages}} 쪽</td>
+            </tr>
+            <tr>
+                <th>ISBN 코드</th>
+                <td>{{book_detail.isbn}}</td>
+            </tr>
+            <tr>
+                <th>평점</th>
+                <td>
+                    {% for _ in range(book_detail.star) %}
+                        <i class="bi bi-star-fill" style="color: red;">*</i>
+                    {% endfor %}
+                    {% for _ in range(5 - book_detail.star) %}
+                        <i class="bi bi-star" style="color: gray;">*</i>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <th>총 대여 횟수</th>
+                <td>{{book_detail.rental_val}} 회</td>
+            </tr>
+            <tr>
+                <th>재고</th>
+                {% if book_detail.remaining == 0 %}
+                    <td style="color: red;">재고 없음</td>
+                {% else %}
+                    <td>{{book_detail.remaining}} 권 남음</td>
+                {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <button>대여하기</button>
+            </tr>
+        </table>
     </div>
 </div>
-<hr>
-{% for post in post_list %}
-<div class="card mt-2">
-    <div class="card-body">
-        <div class="mb-3">
-            <label class="form-label">{{post.author}}</label>
-            <div id='edit-area'>
-                <p id='userContent{{post.id}}'>{{post.content}}</p>
-            </div>
-        </div>
-        {{post.created_at}}
+<div>
+    <h2>책 소개</h2>
+    <div>
+        <p>{{book_detail.description}}</p>
     </div>
-    {% if post.author == g.user.user_id %}
-    <div class="card-footer text-muted">
-        <button class="btn btn-sm btn-warning" onclick="deletePost('{{post.id}}')">삭제하기</button>
-        <button id='editBtn{{post.id}}' class="btn btn-sm btn-success" onclick="updatePost('{{post.id}}')">수정하기</button>
-    </div>
-    {% endif %}
 </div>
-{% endfor %}
+
+<!-- 지금까지 작성된 댓글 보여주기 -->
+<div class="container">
+    <h2 style="font-size: 30px;">댓글</h2>
+    <hr>
+    {% for review in review_list %}
+    <div class="user_info">
+        <span>{{ review.user_name }}</span>
+        <span class="bar">|</span>
+        <span>{{ review.user_email_code }}</span>
+        <span class="bar">|</span>
+        <span>{{ review.write_time }}</span>
+        <span class="bar">|</span>
+        {% for _ in range(book_detail.star) %}
+            <i class="" style="color: yellow;">*</i>
+            <!-- 엄지척 모양으로 바꾸자 -->
+        {% endfor %}
+        {% for _ in range(5 - book_detail.star) %}
+            <i class="" style="color: gray;">*</i>
+        {% endfor %}
+    </div>
+
+    <div class="user_only">
+        <!-- 수정하기 삭제하기 버튼은 작성한 유저만 사용 가능 -->
+        {% if session['user_email'] == review.user_email %}
+        <button>수정하기</button>
+        <button>삭제하기</button>
+        {% endif %}
+    </div>
+
+    <div class="book_review">
+        <p>{{ review.content }}</p>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- 로그인된 유저만 댓글 작성하기 -->
+{% if session['user_email'] %}
+<h3>댓글 작성하기</h3>
+<!-- api 이름! -->
+<form action="{{ url_for('main.write_review', book_id=book_detail.id) }}" method="post">
+    <!-- (app.py) book_detail = LibraryBook.query.filter(LibraryBook.id == book_id).first() -->
+    <div>
+        <textarea placeholder="댓글을 작성하세요"
+        name="review"></textarea>
+        <!-- post로 app.py에 보내줌 (content) -->
+    </div>
+    
+    <!-- 별점을 어떻게 할지 구상해보자! -->
+    <select name="star">
+        <option value="1">1점</option>
+        <option value="2">2점</option>
+        <option value="3">3점</option>
+        <option value="4">4점</option>
+        <option value="5">5점</option>
+    </select>
+    <input class="btn btn-primary" type="submit" value="확인">
+</form>
+{% endif %}
+
 
 {% endblock %}
