@@ -9,31 +9,10 @@ bp = Blueprint('main', __name__, url_prefix='/')
 bcrypt = Bcrypt()
 
 
-# # 모든 request를 하기 전에 실행
-# @bp.before_app_request
-# def load_logged_in_user():
-#     user_id = session.get('login')
-#     if user_id is None:
-#         # 로그인한 사용자 판단 기능 함수 (g : flask 전역변수)
-#         g.user = None
-#     else:
-#         g.user = db.session.query(User).filter(User.id == user_id).first()
-# # 대부분의 redirect는 이곳에서 이루어진다
-
-
 # 메인페이지
 @bp.route('/')
 def home():
-    user_list = LibraryUser.query.order_by(LibraryUser.id.asc().all())
-    return render_template('main.html', user_list=user_list)
-
-    # # session의 login 유무로 redirect하기
-    # if session.get("login") is None:
-    #     # 권한 : 세션에 로그인 값이 없으면 로그인 페이지 보여줌
-    #     return redirect("/login")
-    # else:
-    #     # 권한 : 세션에 로그인 값이 있으면 포스트로 보내줌
-    #     return redirect("/post")
+    return render_template('index.html')
 
 
 # 회원가입
@@ -67,23 +46,26 @@ def register():
 # 로그인
 @bp.route('/login', methods=["GET", "POST"])
 def login():
-    if request.method == 'GET':
-        return render_template("login.html")
-    else:
-        email = request.form['email']
-        password = request.form['password']
+    if session.get("login") is None:
+        if request.method == 'GET':
+            return render_template("login.html")
+        else:
+            email = request.form['email']
+            password = request.form['password']
 
-        # 사용자의 db가져오기
-        user = LibraryUser.query.filter(LibraryUser.email == email).first()
+            # 사용자의 db가져오기
+            user = LibraryUser.query.filter(LibraryUser.email == email).first()
 
-        if user is not None:  # 사용자 존재
-            if bcrypt.check_password_hash(user.passeword, password):
-                session['login'] = user.email
-                return jsonify({"result": "success"})
-            else:
-                return jsonify({"result": "fail"})
-        else:  # 사용자 없음
-            return jsonify({"result": "user_none"})
+            if user is not None:  # 사용자 존재
+                if bcrypt.check_password_hash(user.passeword, password):
+                    session['login'] = user.email
+                    return jsonify({"result": "success"})
+                else:
+                    return jsonify({"result": "fail"})
+            else:  # 사용자 없음
+                return jsonify({"result": "user_none"})
+    else:  # 권한 검사
+        return redirect("/")
 
 
 # 로그아웃
@@ -145,10 +127,12 @@ def rental_list():
 # 대여하기 버튼을 눌렀을 때 동작하는 api : main.html
 @bp.route("/rentalBook", methods=['GET'])
 def rental_book():
-    book_id = request.args['book_id']
+    book_id = request.args.get('book_id')
+    book_info = LibraryBook.query.filter(LibraryBook.id == book_id).first()
+    now = datetime.now()
+    rental_date = now.strftime('%Y-%m-%d %H:%M:%S')
 
     # 책의 재고가 0인 경우
-    book_info = LibraryBook.query.filter(LibraryBook.id == book_id).first()
     if book_info.remaining == 0:
         return jsonify({"result": "fail"})
 
@@ -168,7 +152,7 @@ def rental_book():
     #     return jsonify({"result" : "full"})
 
     rental_info = RentalBook(
-        user_email=session['user_email'], book_id=book_id, rental_date=datetime.now())
+        user_email=session['user_email'], book_id=book_id, rental_date=rental_date)
 
     db.session.add(rental_info)
     db.session.commit()
@@ -176,13 +160,13 @@ def rental_book():
     return jsonify({"result": "success"})
 
 
-# 반납하기 - rental_list.html에서 반납하기 버튼 클릭
-@bp.route("/returnBook", methods=['GET'])
+# 반납하기 - rental_list.html(하단)에서 반납하기 버튼 클릭
+@ bp.route("/returnBook", methods=['GET'])
 def return_book():
-    book_id = request.args['book_id']
-
+    book_id = request.args.get('book_id')
     rental_book = RentalBook.query.filter(RentalBook.user_email == session['user_email']).filter(
         RentalBook.book_id == book_id).first()
+
     db.session.delete(rental_book)
 
     book_info = LibraryBook.query.filter(LibraryBook.id == book_id).first()

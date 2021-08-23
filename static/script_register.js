@@ -73,12 +73,15 @@ function getFieldName(input) {
 
 // Event listeners
 form.addEventListener('submit', function(e) {
-  e.preventDefault();
+  // e.preventDefault();
 
   if(!checkRequired([username, email, password, password2])){
-    checkLength(username, 5, 20);
+    checkLength(username, 3, 20);
     checkLength(password, 8, 16);
     checkEmail(email);
     checkPasswordsMatch(password, password2);
+  }else{
+    //다 알맞게 통과하면
+    regist()
   }
 });

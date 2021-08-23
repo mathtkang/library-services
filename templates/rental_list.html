@@ -14,12 +14,13 @@ function return_book(book_id) {
         success: function(res) {
             if(res['result'] == 'success') {
                 alert("반납 완료!")
-                window.location.href = '/main.html'
+                window.location.href = '/rentalList'
             // } else if(res['result'] == 'fail') {
             //     alert("")
             //     window.location.href = '/'
             } else{
-                window.location.href = '/'
+                alert("에러 발생")
+                window.location.reload()
             }
         }
     })
