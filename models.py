@@ -1,9 +1,6 @@
 from db_connect import db
 from datetime import datetime
 
-if __name__ == "__main__":
-    db.create_all()
-
 '''
 [데이터베이스 제약 조건 명시 파일]
 관계형 데이터베이스의 데이터를 객체랑 연결 시켜주는 것을 ORM (Object Relational Mapping)이라 한다.
@@ -87,3 +84,7 @@ class LibraryUser(db.Model):
 #         self.user_email = user_email
 #         self.book_id = book_id
 #         self.rental_date = rental_date
+
+
+if __name__ == "__main__":
+    db.create_all()

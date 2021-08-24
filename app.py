@@ -1,5 +1,6 @@
 from flask import Flask
 from db_connect import db
+from models import *
 import config
 
 
