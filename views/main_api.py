@@ -15,7 +15,7 @@ def home():
     #     # 권한 : 세션에 로그인 값이 있으면 포스트로 보내줌
     #     return redirect("/post")
 
-    return render_template('index.html')
+    return render_template('main.html')
 
 
 # @bp.route('/main')

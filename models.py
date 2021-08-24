@@ -9,7 +9,7 @@ from datetime import datetime
 '''
 
 
-# 도서관 유저 테이블
+# 도서관 사용자 테이블
 class LibraryUser(db.Model):
 
     __tablename__ = 'libraryUser'
@@ -25,7 +25,7 @@ class LibraryUser(db.Model):
         self.password = password
 
 
-# 전체 책 목록 테이블
+# 도서관 전체 책 목록 테이블
 class LibraryBook(db.Model):
 
     __tablename__ = 'libraryBook'
@@ -51,7 +51,7 @@ class LibraryReview(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     user_name = db.Column(db.String(255), nullable=False)
     user_email = db.Column(db.String(255), nullable=False)
-    content = db.Column(db.Text(), nullable=False)
+    content = db.Column(db.Text(), nullable=False)  # 댓글 내용
     rating = db.Column(db.Integer, nullable=False)  # 평가 별점
     book_id = db.Column(db.Integer, db.ForeignKey(
         'libraryBook.id'), nullable=False)
@@ -64,7 +64,6 @@ class LibraryReview(db.Model):
         self.rating = rating
         self.book_id = book_id
         self.write_time = write_time
-        # self.user_email_code = user_email_code
 
 
 # 책 대여 현황 테이블
