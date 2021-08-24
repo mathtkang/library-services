@@ -11,11 +11,11 @@ def create_app():
     db.init_app(app)
 
     # 블루프린트
-    from views import book_detail_api, book_list_api, main_api, rental_api, return_book_api, user_api
+    from views import book_detail_api, book_list_api, main_api, mypage_api, return_book_api, user_api
     app.register_blueprint(book_detail_api.bp)
     app.register_blueprint(book_list_api.bp)
     app.register_blueprint(main_api.bp)
-    app.register_blueprint(rental_api.bp)
+    app.register_blueprint(mypage_api.bp)
     app.register_blueprint(return_book_api.bp)
     app.register_blueprint(user_api.bp)
 

@@ -1,89 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="stylesheet" href="../static/css/register.css" />
-    <title>register</title>
-  </head>
-  <body>
-    <script>
-        function regist() {
-          let user_name = $("#user_name").val()
-          let user_email = $("#user_email").val()
-          let password = $("#password").val()
-          let password2 = $("#password2").val()
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" href="../static/css/register.css" />
+  <title>register</title>
+</head>
+<body>
+<script>
+    function regist() {
+      let user_name = $("#user_name").val()
+      let user_email = $("#user_email").val()
+      let password = $("#password").val()
+      let password2 = $("#password2").val()
 
-          if (password != password2) {
-              alert("비밀번호가 일치하는지 다시 확인해 주세요!")
-              return;
-          }
-          $.ajax({
-              url: '/register',
-              type: 'post',
-              data: {
-                  'user_name': user_name,
-                  'user_email': user_email,
-                  'password': password,
-                  'password2': password2
-              },
-              success: function (res) {
-                  if (res['result'] == 'success') {
-                      alert("회원가입이 완료되었습니다. 이제 로그인하세요!");
-                      window.location.href = '/' //login
-                  } else if (res['result'] == 'email_check') {
-                      alert("이미 존재하는 이메일 입니다.")
-                  } else if (res['result'] == 'pw_check') {
-                      alert("비밀번호는 8자리 이상이어야 합니다.")
-                  } else {
-                    alert("error1")
-                  }
-              },
-              error : function() {
-                alert("error2")
-              },
-              complete : function() {
-                  alert("complete!");    
+      if (password != password2) {
+          alert("비밀번호가 일치하는지 다시 확인해 주세요!")
+          return;
+      }
+      $.ajax({
+          url: '/register',
+          type: 'post',
+          data: {
+              'user_name': user_name,
+              'user_email': user_email,
+              'password': password,
+              'password2': password2
+          },
+          success: function (res) {
+              if (res['result'] == 'success') {
+                  alert("회원가입이 완료되었습니다. 이제 로그인하세요!");
+                  window.location.href = '/' //login
+              } else if (res['result'] == 'email_check') {
+                  alert("이미 존재하는 이메일 입니다.")
+              } else if (res['result'] == 'pw_check') {
+                  alert("비밀번호는 8자리 이상이어야 합니다.")
+              } else {
+                alert("error1")
               }
-          });
-        }
+          // },
+          // error : function() {
+          //   alert("error2")
+          // },
+          // complete : function() {
+          //     alert("complete!");    
+          }
+      });
+    }
+</script>
 
-    </script>
 
+<div class="container">
+  <form action="{{ url_for('user.register') }}" method="post" id="form" class="form">
+    <h2>Register Elice Library</h2>
 
-    <div class="container">
-      <form action="{{ url_for('user.register') }}" method="post" id="form" class="form">
-        <h2>Register Elice Library</h2>
-
-        <div class="form-control">
-          <label for="username">이름</label>
-          <input type="text" name="user_name" id="user_name" />
-          <small>Error message</small>
-        </div>
-        <div class="form-control">
-          <label for="email">아이디</label>
-          <input type="text" name="user_email" id="user_email" placeholder="                                                        @elice.com"/>
-          <small>Error message</small>
-        </div>
-        <div class="form-control">
-          <label for="password">비밀번호</label>
-          <input type="password" name="password" id="password" />
-          <small>Error message</small>
-        </div>
-        <div class="form-control">
-          <label for="password2">비밀번호 재확인</label>
-          <input
-            type="password" name="password2" id="password2" />
-          <small>Error message</small>
-        </div>
-
-        <!-- <button class="submit" onclick="regist()" >가입하기</button> -->
-        <button class="submit" type="submit">가입하기</button>
-
-      </form>
+    <div class="form-control">
+      <label for="username">이름</label>
+      <input type="text" name="user_name" id="user_name" />
+      <small>Error message</small>
+    </div>
+    <div class="form-control">
+      <label for="email">아이디</label>
+      <input type="text" name="user_email" id="user_email" placeholder="                                                        @elice.com"/>
+      <small>Error message</small>
+    </div>
+    <div class="form-control">
+      <label for="password">비밀번호</label>
+      <input type="password" name="password" id="password" />
+      <small>Error message</small>
+    </div>
+    <div class="form-control">
+      <label for="password2">비밀번호 재확인</label>
+      <input
+        type="password" name="password2" id="password2" />
+      <small>Error message</small>
     </div>
 
-  <!-- <script src="../static/js/register.js"></script> -->
-  </body>
+    <button class="submit" onclick="regist()" >가입하기</button>
+    <!-- <button class="submit" type="submit">가입하기</button> -->
+  </form>
+</div>
+
+<!-- <script src="../static/js/register.js"></script> -->
+</body>
 </html>
