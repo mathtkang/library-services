@@ -67,8 +67,8 @@ class LibraryReview(db.Model):
 
 
 # 책 대여 현황 테이블
-class RentalBook(db.Model):
-    __tablename__ = 'rentalBook'
+class UserRentBook(db.Model):
+    __tablename__ = 'userRentBook'
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     user_email = db.Column(db.Integer, nullable=False)

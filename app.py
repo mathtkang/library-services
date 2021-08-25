@@ -20,7 +20,7 @@ def create_app():
     app.register_blueprint(user_api.bp)
 
     # 세션 사용을 위해서
-    app.secret_key = "asdfasdfasdf"
+    app.secret_key = "secret_key_for_session"
     app.config['SESSION_TYPE'] = 'filesystem'
 
     return app

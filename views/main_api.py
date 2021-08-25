@@ -4,52 +4,56 @@ from models import *
 bp = Blueprint('main', __name__, url_prefix='/')
 
 
-# 홈페이지 첫 화면
-@bp.route('/')
-def home():
-    # # session의 login 유무로 redirect하기
-    # if session.get("login") is None:
-    #     # 권한 : 세션에 로그인 값이 없으면 로그인 페이지 보여줌
-    #     return redirect("/login")
-    # else:
-    #     # 권한 : 세션에 로그인 값이 있으면 포스트로 보내줌
-    #     return redirect("/post")
-    # book_list =
+# 도서관의 책 전체 리스트 반환 - main.html
+@bp.route("/", methods=['GET', 'POST'])  # /bookList
+def book_list():
+    book_list = LibraryBook.query.all()
 
-    return render_template('main.html', book_list)
+    # 대여하기
+    if request.method == 'POST':
+        book_id = request.form['book_id']
 
+        if not book_id:
+            flash('book_id는 필수 파라미터 입니다.')
+            return render_template("main.html", book_list=book_list)
 
-# 대여하기 버튼을 눌렀을 때 동작하는 api : main.html, book_detail.html
-@bp.route("/rentalBook", methods=['GET'])
-def rental_book():
-    book_id = request.args.get('book_id')
-    book_info = LibraryBook.query.filter(LibraryBook.id == book_id).first()
-    now = datetime.now()
-    rental_date = now.strftime('%Y-%m-%d %H:%M:%S')
+        book_info = LibraryBook.query.filter(LibraryBook.id == book_id).first()
+        now = datetime.now()
+        rental_date = now.strftime('%Y-%m-%d %H:%M:%S')
 
-    # 책의 재고가 0인 경우
-    if book_info.remaining == 0:
-        return jsonify({"result": "fail"})
+        # 책의 재고가 0인 경우
+        if book_info.remaining == 0:
+            # return jsonify({"result": "fail"})
+            flash('재고가 없어서 대여할 수 없습니다. 다른 책을 대여해주세요.')
+            return render_template("main.html", book_list=book_list)
+        # 책의 재고가 존재하는 경우
+        else:
+            book_info.remaining -= 1  # 재고
+            book_info.rental_val += 1  # 대여횟수
 
-    book_info.remaining -= 1
-    book_info.rental_val += 1
+            rental_info = RentalBook(
+                user_email=session['user_email'], book_id=book_id, rental_date=rental_date)
 
-    # 이미 대여한 도서를 한번 더 클릭하는 경우
-    rental_books = RentalBook.query.filter(
-        RentalBook.user_email == session['user_email']).all()
+            db.session.add(rental_info)
+            db.session.commit()
+            flash(f'{book.name}을 대여했습니다.')
+        return redirect('/')
+        # return jsonify({"result": "success"})
 
-    for book in rental_books:
-        if book.book_id == int(book_id):
-            return jsonify({"result": "already"})
+        # [이미 대여한 도서를 한번 더 클릭하는 경우]
+        # rental_books = RentalBook.query.filter(
+        #     RentalBook.user_email == session['user_email']).all()
+        # for book in rental_books:
+        #     if book.book_id == int(book_id):
+        #         return jsonify({"result": "already"})
 
-    # 대여할 수 있는 권수를 초과한 경우
-    # if len(rental_books) >= 3:
-    #     return jsonify({"result" : "full"})
+        # [대여할 수 있는 권수를 초과한 경우]
+        # if len(rental_books) >= 3:
+        #     return jsonify({"result" : "full"})
 
-    rental_info = RentalBook(
-        user_email=session['user_email'], book_id=book_id, rental_date=rental_date)
+        # [DB상에 책이 존재하지 않는 경우]
+        # if book_info is None:
+        #     flash('대출하려는 책을 찾을 수 없습니다.')
+        #     return render_template("main.html", book_list=book_list)
 
-    db.session.add(rental_info)
-    db.session.commit()
-
-    return jsonify({"result": "success"})
+    return render_template("main.html", book_list=book_list)

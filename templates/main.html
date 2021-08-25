@@ -1,15 +1,13 @@
-<!-- 첫 홈페이지 화면 -->
-
 {% extends "_base.html" %}
 
 {% block title %}전체 도서 열람 페이지{% endblock %}
 
 {% block script %}
-<script>
+<!-- <script>
     function rental_book(librarybook_id){
         $.ajax({
         url:'/rentalBook',
-        type:'get',
+        type:'post',
         data:{
             'book_id':librarybook_id
         },
@@ -32,33 +30,26 @@
         }
     })
     }
-
-</script>
+</script> -->
 {% endblock %}
 
 
 {% block content %}
 <h2>엘리스 책 목록</h2>
 <h2>전체 도서 열람 페이지</h2>
+<!-- header : 검색 모양 -->
 
 {% if book_list %}
-{% for book in book_list.items %}
-<div>
+{% for book in book_list %}
+<form method="post">
     <div>
-        <!-- api 이름! book_detail페이지로 이동 -->
-        <!-- <a href="{{ url_for('main.book_detail', book_id=) }}"> -->
-            <img class="" src="../static/img/{{ book.img_lick }}.jpg" alt="{{book.book_name}}" style="height:550px;width:430px;">
-        <!-- </a> -->
+        <img class="" src="../static/img_book/{{ book.img_link }}.jpg" alt="{{ book.book_name }}" style="width:430px; height:550px;">
     </div>
     <div>
         <table class="book_list" style="width:85%; height:100%;margin-left:100px;">
             <tr>
                 <th>책 이름</th>
-                <td>{{book.book_name}}</td>
-            </tr>
-            <tr>
-                <th>저자</th>
-                <td>{{book.author}}</td>
+                <td>{{ book.book_name }}</td>
             </tr>
             <tr>
                 <th>평점</th>
@@ -72,21 +63,33 @@
                 </td>
             </tr>
             <tr>
-                <th>대여 가능 여부</th>
+                <th>대여 여부</th>
                 {% if book.remaining == 0 %}
                     <td style="color: red;">현재 대여가 불가능합니다.</td>
                 {% else %}
-                    <td>{{book.remaining}}권 남아있습니다.</td>
+                    <td>{{ book.remaining }}권 남아있습니다.</td>
                 {% endif %}
                 </td>
             </tr>
         </table>
     </div>
     <div>
-        <button onclick="rental_book('{{book.id}}')">대여하기</button>
+        <!-- <button 
+            onclick="rental_book('{{book.id}}')"
+        >대여하기</button>
+        <button 
+            onclick="rental_book('{{book.id}}')"
+        >자세히보기</button> -->
+        
+        <input type="hidden" name="book_id" value="{{ book.id }}">
+        <input type="submit" value="대여하기" />
+        <a href="/bookDetail/{{ book_id }}" class="block mt-2">자세히보기</a>
     </div>
-</div>
+</form>
 {% endfor %}
+
+{% else %}
+<div>book_list가 없습니다</div>
 {% endif %}
 
 
