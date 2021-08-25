@@ -2,33 +2,40 @@ from flask import redirect, request, render_template, jsonify, Blueprint, sessio
 from models import *
 from flask_bcrypt import Bcrypt
 
+from flask_login import login_required, login_user, current_user, logout_user
+from email_validator import validate_email, EmailNotValidError
+# from werkzeug.security import generate_password_hash, check_password_hash   #Bcrypt에 포함되어있음
+
 bp = Blueprint('user', __name__, url_prefix='/')
 bcrypt = Bcrypt()
 
 
-# 회원가입
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == 'GET':
-        return render_template('register.html')
-    else:  # POST
+    '''
+    회원가입
+    :return:
+    '''
+    if request.method == 'POST':
         user_name = request.form['user_name']
         user_email = request.form['user_email']
         password = request.form['password']
+        password2 = request.form['password2']
+
         # 비밀번호 암호화
         pw_hash = bcrypt.generate_password_hash(password)
 
-        # 아이디(email) 중복 확인
+        # 사용자 중복 확인
         user_check = LibraryUser.query.filter(
             LibraryUser.user_email == user_email).first()
-        if user_check:  # 해당 이메일이 존재
-            jsonify({"result": "email_check"})
-            # flash("이미 가입된 아이디입니다.")
+        if user_check:
+            # flash("이미 존재하는 이메일입니다.")
             # return redirect('/register')
+            jsonify({"result": "email_check"})
 
-        # 비밀번호 자릿수 확인
-        if len(password) < 8:
-            return jsonify({"result": "pw_check"})
+        # 비밀번호 자릿수 확인 - front에서 해결하기
+        # if len(password) < 8:
+        #     return jsonify({"result": "pw_check"})
             # flash("비밀번호는 8자리 이상입니다.")
             # return redirect('/register')
 
@@ -38,38 +45,54 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        return jsonify({"result": "success"})
-        # flash("회원가입이 완료되었습니다. 로그인 해주세요.")
+        # flash("회원가입이 완료되었습니다. 로그인해주세요!")
         # return redirect('/login')
+        return jsonify({"result": "success"})
+
+    # get방식인 경우
+    return render_template('register.html')
 
 
-# 로그인
 @bp.route('/login', methods=["GET", "POST"])
 def login():
-    if session.get("login") is None:
-        if request.method == 'GET':
-            return render_template("login.html")
+    '''
+    로그인
+    권한 검사 : 세션에 유저이메일 값이 없는 경우에만 아래를 실행하시오
+    :return:
+    '''
+# if session["user_email"] is None:
+    if request.method == 'POST':
+        user_email = request.form['user_email']
+        password = request.form['password']
+
+        # 사용자 db가져오기
+        user_data = LibraryUser.query.filter(
+            LibraryUser.email == user_email).first()
+
+        # 사용자 존재하는 경우
+        if user is not None:
+            # 암호화된 비밀번호 일치 여부
+            if bcrypt.check_password_hash(user_data.passeword, password):
+                session.clear()
+                session['user_name'] = user_data.user_name
+                session['user_email'] = user_data.user_email
+                return jsonify({"result": "success"})
+            # 비밀번호 일치하지 않음
+            else:
+                return jsonify({"result": "fail"})
+        # 사용자 없음
         else:
-            email = request.form['email']
-            password = request.form['password']
-
-            # 사용자의 db가져오기
-            user = LibraryUser.query.filter(LibraryUser.email == email).first()
-
-            if user is not None:  # 사용자 존재
-                if bcrypt.check_password_hash(user.passeword, password):
-                    session['login'] = user.email
-                    return jsonify({"result": "success"})
-                else:
-                    return jsonify({"result": "fail"})
-            else:  # 사용자 없음
-                return jsonify({"result": "user_none"})
-    else:  # 권한 검사
-        return redirect("/")
+            return jsonify({"result": "user_none"})
+    else:  # GET
+        return render_template("login.html")
+# else:
+#     return redirect("/logout")
 
 
-# 로그아웃
 @bp.route('/logout')
 def logout():
-    session['login'] = None
-    return redirect("/")
+    '''
+    로그아웃
+    '''
+    session.clear()
+    return redirect("/register")

@@ -14,7 +14,7 @@
       let user_email = $("#user_email").val()
       let password = $("#password").val()
       let password2 = $("#password2").val()
-
+      //js파일에서 구현한거 연동되는지 확인!
       if (password != password2) {
           alert("비밀번호가 일치하는지 다시 확인해 주세요!")
           return;
@@ -30,21 +30,14 @@
           },
           success: function (res) {
               if (res['result'] == 'success') {
-                  alert("회원가입이 완료되었습니다. 이제 로그인하세요!");
-                  window.location.href = '/' //login
+                  alert("회원가입이 완료되었습니다. 이제 로그인해주세요!");
+                  window.location.href = '/login'
               } else if (res['result'] == 'email_check') {
-                  alert("이미 존재하는 이메일 입니다.")
-              } else if (res['result'] == 'pw_check') {
-                  alert("비밀번호는 8자리 이상이어야 합니다.")
-              } else {
-                alert("error1")
-              }
-          // },
-          // error : function() {
-          //   alert("error2")
-          // },
-          // complete : function() {
-          //     alert("complete!");    
+                  alert("이미 존재하는 이메일입니다.")
+                  window.location.href = '/register'
+              // } else if (res['result'] == 'pw_check') {
+              //     alert("비밀번호는 8자리 이상이어야 합니다.")
+              } 
           }
       });
     }
