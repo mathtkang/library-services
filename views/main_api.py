@@ -14,13 +14,9 @@ def home():
     # else:
     #     # 권한 : 세션에 로그인 값이 있으면 포스트로 보내줌
     #     return redirect("/post")
+    # book_list =
 
-    return render_template('main.html')
-
-
-# @bp.route('/main')
-# def home():
-#     return render_template('main.html', book_list)
+    return render_template('main.html', book_list)
 
 
 # 대여하기 버튼을 눌렀을 때 동작하는 api : main.html, book_detail.html
