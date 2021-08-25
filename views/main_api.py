@@ -1,5 +1,6 @@
 from flask import redirect, request, render_template, jsonify, Blueprint, session, g, url_for
 from models import *
+from datetime import datetime
 
 bp = Blueprint('main', __name__, url_prefix='/')
 
@@ -31,7 +32,7 @@ def book_list():
             book_info.remaining -= 1  # 재고
             book_info.rental_val += 1  # 대여횟수
 
-            rental_info = RentalBook(
+            rental_info = UserRentBook(
                 user_email=session['user_email'], book_id=book_id, rental_date=rental_date)
 
             db.session.add(rental_info)

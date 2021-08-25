@@ -13,11 +13,15 @@ function return_book(book_id) {
         },
         success: function(res) {
             if(res['result'] == 'success') {
-                alert("반납 완료!")
-                window.location.href = '/rentalList'
-            // } else if(res['result'] == 'fail') {
-            //     alert("")
-            //     window.location.href = '/'
+                if(confirm("대여중인 도서를 반납하시겠습니까?")){
+                    alert("반납되었습니다.")
+                } else {
+                    alert("반납되지 않았습니다. 마이페이지로 돌아갑니다.")
+                }
+                window.location.href = '/mypage'
+            } else if(res['result'] == 'none') {
+                alert("존재하지 않는 대여입니다.")
+                window.location.href = '/mypage'
             } else{
                 alert("에러 발생")
                 window.location.reload()
@@ -31,41 +35,39 @@ function return_book(book_id) {
 
 {% block content %}
 
-<h2>도서 대여 기록 페이지</h2>
-
-<!-- rental_list = RentalBook.query.filter(
-        RentalBook.user_email == session['user_email']).all()  -->
-
+<h2>{{  }}님의 도서대여기록입니다.</h2>
 <div>
-<!-- 대여기록 테이블로 표현 -->
-<table class="table" style="width:85%; height:100%;margin-left:100px;">
+
+<table class="table" style="width:85%; height:100%;">
     <thead>
         <tr>
-            <th>No.</th>
+            <th>대여일자</th>
             <th>책 사진</th>
             <th>책 제목</th>
-            <th>대여일자</th>
             <th>대여횟수</th>
             <th>반납일자</th>
-
         </tr>
     </thead>
     <tbody>
         {% for book in rental_list %}
-        <!-- (app.py) rental_list = RentalBook.query.filter(RentalBook.user_email == session['user_email']).all() -->
-        <!-- (models.py) book_data = db.relationship('LibraryBook', foreign_keys='RentalBook.book_id') -->
+        <!-- (mypage_api.py) 
+            rental_list = UserRentBook.query.filter(UserRentBook.user_email == session['user_email']).all() -->
+        <!-- (models.py) 
+            book_data = db.relationship('LibraryBook', foreign_keys='UserRentBook.book_id') -->
         <tr>
-            <td>{{book.book_data.id}}</td>
-            <td>{{book.book_data.img_link}}</td>
-            <td>{{book.book_data.book_name}}</td>
-            <td>{{book.rental_date}}</td>
-            <td>{{book.book_data.rental_val}}</td>
-            <!-- 반납일자가 있으면 반납 일자를 보여주고,
-            없다면, 반납하기 버튼을 출력-->
+            <td>{{ book.rental_date }}</td>
+            <td>{{ book.book_data.img_link }}</td>
+            <td>{{ book.book_data.book_name }}</td>
+            <td>{{ book.book_data.rental_val }}</td>
+            <!-- 반납일자 : 있으면 반납일자를 보여주고, 없다면 반납하기 버튼 -->
             {% if book.return_date %}
-                <td>{{book.return_date}}</td>
+            <td>{{ book.return_date }}</td>
             {% else %}
-                <td><button onclick="return_book('{{book.book_id}}')">반납하기</button></td>
+            <td>
+                <!-- <button onclick="return_book('{{ book.book_id }}')">반납하기</button> -->
+                <input type="hidden" name="book_id" value="{{ book.id }}">
+                <input type="submit" value="반납하기" />
+            </td>
             {% endif %}
         </tr>
         {% endfor %}
