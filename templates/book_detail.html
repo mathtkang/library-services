@@ -28,14 +28,14 @@
 {% block content %}
 <h2>책 소개 페이지</h2>
 
-<div>
+<div class="row">
     <div>
         <img class="" src="../static/img_book/book_detail.img_link }}.jpg" alt="{{ book_detail.book_name }}" style="height:550px;width:430px;">
     </div>
     <div>
         <table class="book_detail" style="width:85%; height:100%;margin-left:100px;">
             <tr>
-                <th>책 이름</th>
+                <th>책 제목</th>
                 <td>{{ book_detail.book_name }}</td>
             </tr>
             <tr>
@@ -71,7 +71,7 @@
             </tr>
             <tr>
                 <th>총 대여 횟수</th>
-                <td>{{book_detail.rental_val}} 회</td>
+                <td>{{ book_detail.rental_val }} 회</td>
             </tr>
             <tr>
                 <th>재고</th>
@@ -82,77 +82,75 @@
                 {% endif %}
                 </td>
             </tr>
-            <tr>
-                <button>대여하기</button>
-            </tr>
         </table>
     </div>
 </div>
-<div>
+<div class="row">
     <h2>책 소개</h2>
     <div>
-        <p>{{book_detail.description}}</p>
+        <p>{{ book_detail.description }}</p>
     </div>
 </div>
 
-<!-- 지금까지 작성된 댓글 보여주기 -->
-<div class="container">
-    <h2 style="font-size: 30px;">댓글</h2>
-    <hr>
-    {% for review in review_list %}
-    <div class="user_info">
-        <span>{{ review.user_name }}</span>
-        <span class="bar">|</span>
-        <span>{{ review.user_email_code }}</span>
-        <span class="bar">|</span>
-        <span>{{ review.write_time }}</span>
-        <span class="bar">|</span>
-        {% for _ in range(book_detail.star) %}
-            <i class="" style="color: yellow;">*</i>
-            <!-- 엄지척 모양으로 바꾸자 -->
-        {% endfor %}
-        {% for _ in range(5 - book_detail.star) %}
-            <i class="" style="color: gray;">*</i>
-        {% endfor %}
-    </div>
+<!-- 대여하기 버튼 -->
+<!-- <div class="">
+    <input type="submit" value="대여하기" />
+    아니면 a태그 href?
+    아니면 버튼?
+</div> -->
 
-    <div class="user_only">
-        <!-- 수정하기 삭제하기 버튼은 작성한 유저만 사용 가능 -->
-        {% if session['user_email'] == review.user_email %}
-        <button>수정하기</button>
-        <button>삭제하기</button>
-        {% endif %}
-    </div>
 
-    <div class="book_review">
-        <p>{{ review.content }}</p>
-    </div>
-    {% endfor %}
-</div>
 
-<!-- 로그인된 유저만 댓글 작성하기 -->
+<!-- 댓글 작성하기 : 로그인된 유저만 -->
 {% if session['user_email'] %}
-<h3>댓글 작성하기</h3>
-<!-- api 이름! -->
-<form action="{{ url_for('main.write_review', book_id=book_detail.id) }}" method="post">
-    <!-- (app.py) book_detail = LibraryBook.query.filter(LibraryBook.id == book_id).first() -->
+<form method="post" class="">
     <div>
-        <textarea placeholder="댓글을 작성하세요"
-        name="review"></textarea>
-        <!-- post로 app.py에 보내줌 (content) -->
+        <textarea name="review" laceholder="댓글을 작성하세요" rows="5" cols="20"></textarea>
     </div>
-    
-    <!-- 별점을 어떻게 할지 구상해보자! -->
-    <select name="star">
+    <select name="rating">
         <option value="1">1점</option>
         <option value="2">2점</option>
         <option value="3">3점</option>
         <option value="4">4점</option>
         <option value="5">5점</option>
     </select>
-    <input class="btn btn-primary" type="submit" value="확인">
+    <input type="submit" value="확인" class="" >
 </form>
-{% endif %}
 
+{% else %}
+
+<!-- 지금까지 작성된 댓글 보여주기 -->
+<div class="container">
+    <h2 style="font-size: 30px;">작성된 댓글</h2>
+    <hr>
+    {% for review in review_list %}
+    <!-- book_detial_api -->
+    <div class="all_review">
+        <div class="user_info">
+            <span>{{ review.user_name }}</span>
+            <span class="bar">|</span>
+            <span>{{ review.user_email }}</span>
+            <span class="bar">|</span>
+            <span>{{ review.write_time }}</span>
+            <span class="bar">|</span>
+            <span>{{ review.rating }}</span>
+        </div>
+        <div class="review_content" style="font-size : 24px;">
+            {{ review.content }}
+        </div>
+
+        <!-- 수정하기 삭제하기 버튼 : 작성한 유저만 사용 가능 -->
+        {% if session['user_email'] == review.user_email %}
+        <div class="user_only">
+            <button>수정하기</button>
+            <button>삭제하기</button>
+        </div>
+        {% endif %}
+    </div>
+
+    {% endfor %}
+</div>
+
+{% endif %}
 
 {% endblock %}
