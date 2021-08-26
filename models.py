@@ -19,7 +19,7 @@ class LibraryUser(db.Model):
     user_email = db.Column(db.String(255), nullable=False)
     password = db.Column(db.String(255), nullable=False)
 
-    def __init__(self, user_name, user_email, passeword):
+    def __init__(self, user_name, user_email, password):
         self.user_name = user_name
         self.user_email = user_email
         self.password = password

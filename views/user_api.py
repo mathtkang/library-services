@@ -40,14 +40,15 @@ def register():
             # return redirect('/register')
 
         # db에 유저 생성
-        user = LibraryUser(user_name=user_name,
-                           user_email=user_email, passeword=pw_hash)
-        db.session.add(user)
+        user_data = LibraryUser(user_name=user_name,
+                                user_email=user_email, password=pw_hash)
+        db.session.add(user_data)
         db.session.commit()
 
-        # flash("회원가입이 완료되었습니다. 로그인해주세요!")
-        # return redirect('/login')
-        return jsonify({"result": "success"})
+        flash("회원가입이 완료되었습니다. 로그인해주세요!")
+        return redirect('/login')
+        # return jsonify({"result": "success"})
+        # jsonify 방식으로는 안된다!!
 
     # get방식인 경우
     return render_template('register.html')
@@ -67,12 +68,12 @@ def login():
 
         # 사용자 db가져오기
         user_data = LibraryUser.query.filter(
-            LibraryUser.email == user_email).first()
+            LibraryUser.user_email == user_email).first()
 
         # 사용자 존재하는 경우
-        if user is not None:
+        if user_data is not None:
             # 암호화된 비밀번호 일치 여부
-            if bcrypt.check_password_hash(user_data.passeword, password):
+            if bcrypt.check_password_hash(user_data.password, password):
                 session.clear()
                 session['user_name'] = user_data.user_name
                 session['user_email'] = user_data.user_email

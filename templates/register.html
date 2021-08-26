@@ -8,6 +8,7 @@
   <title>register</title>
 </head>
 <body>
+{% block scripts %}
 <script>
     function regist() {
       let user_name = $("#user_name").val()
@@ -42,7 +43,7 @@
       });
     }
 </script>
-
+{% endblock %}
 
 <div class="container">
   <form action="{{ url_for('user.register') }}" method="post" id="form" class="form">
@@ -70,7 +71,7 @@
       <small>Error message</small>
     </div>
 
-    <button class="submit" onclick="regist()" >가입하기</button>
+    <button onclick="regist()" class="submit">가입하기</button>
     <!-- <button class="submit" type="submit">가입하기</button> -->
   </form>
 </div>

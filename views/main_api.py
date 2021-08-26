@@ -6,7 +6,7 @@ bp = Blueprint('main', __name__, url_prefix='/')
 
 
 # 도서관의 책 전체 리스트 반환 - main.html
-@bp.route("/", methods=['GET', 'POST'])  # /bookList
+@bp.route("/", methods=['GET', 'POST'])
 def book_list():
     book_list = LibraryBook.query.all()
 

@@ -4,38 +4,38 @@
 
 {% block scripts %}
 <script>
-function return_book(book_id) {
-    $.ajax({
-        url:'/returnBook',
-        type:'get',
-        data:{
-            'book_id':book_id
-        },
-        success: function(res) {
-            if(res['result'] == 'success') {
-                if(confirm("대여중인 도서를 반납하시겠습니까?")){
-                    alert("반납되었습니다.")
-                } else {
-                    alert("반납되지 않았습니다. 마이페이지로 돌아갑니다.")
-                }
-                window.location.href = '/mypage'
-            } else if(res['result'] == 'none') {
-                alert("존재하지 않는 대여입니다.")
-                window.location.href = '/mypage'
-            } else{
-                alert("에러 발생")
-                window.location.reload()
-            }
-        }
-    })
-}
+// function return_book(book_id) {
+//     $.ajax({
+//         url:'/returnBook',
+//         type:'get',
+//         data:{
+//             'book_id':book_id
+//         },
+//         success: function(res) {
+//             if(res['result'] == 'success') {
+//                 if(confirm("대여중인 도서를 반납하시겠습니까?")){
+//                     alert("반납되었습니다.")
+//                 } else {
+//                     alert("반납되지 않았습니다. 마이페이지로 돌아갑니다.")
+//                 }
+//                 window.location.href = '/mypage'
+//             } else if(res['result'] == 'none') {
+//                 alert("존재하지 않는 대여입니다.")
+//                 window.location.href = '/mypage'
+//             } else{
+//                 alert("에러 발생")
+//                 window.location.reload()
+//             }
+//         }
+//     })
+// }
 </script>
 {% endblock %}
 
 
 {% block content %}
 
-<h2>{{  }}님의 도서대여기록입니다.</h2>
+<h2>{{ session['user_name'] }} 님의 도서대여기록입니다.</h2>
 <div>
 
 <table class="table" style="width:85%; height:100%;">
