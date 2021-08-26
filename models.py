@@ -30,18 +30,18 @@ class LibraryBook(db.Model):
 
     __tablename__ = 'libraryBook'
 
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
-    book_name = db.Column(db.String(255), nullable=False)  # 책이름
-    publisher = db.Column(db.String(255), nullable=False)  # 출판사
-    author = db.Column(db.String(255), nullable=False)  # 저자
-    publication_date = db.Column(db.Date, nullable=False)  # 출간일
-    pages = db.Column(db.Integer, nullable=False)  # 페이지 수
-    isbn = db.Column(db.Integer, nullable=False)  # ISBN 코드
-    description = db.Column(db.Text(), nullable=False)  # 책 소개
-    star = db.Column(db.Integer, nullable=False)  # 별점
-    img_link = db.Column(db.String(255), nullable=False)  # 이미지
-    rental_val = db.Column(db.Integer, nullable=False)  # 총 대여 횟수
-    remaining = db.Column(db.Integer, nullable=False)  # 재고
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    book_name = db.Column(db.String(255))  # 책이름
+    publisher = db.Column(db.String(255))  # 출판사
+    author = db.Column(db.String(255))  # 저자
+    publication_date = db.Column(db.Date)  # 출간일
+    pages = db.Column(db.Integer)  # 페이지 수
+    isbn = db.Column(db.String(30))  # ISBN 코드
+    description = db.Column(db.Text)  # 책 소개
+    star = db.Column(db.Integer)  # 별점
+    img_link = db.Column(db.String(255))  # 이미지
+    rental_val = db.Column(db.Integer)  # 총 대여 횟수
+    remaining = db.Column(db.Integer)  # 재고
 
 
 # 책 소개 페이지의 댓글 테이블

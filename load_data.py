@@ -17,13 +17,14 @@ with open('library.csv', 'r') as f:
         except:
             img_link += '.jpg'
 
-        publication_date = datetime.strptime(published_at, '%Y-%m-%d').date()
+        publication_date = datetime.strptime(
+            row['publication_date'], '%Y-%m-%d').date()
         libraryBook = LibraryBook(
             id=int(row['id']),
             book_name=row['book_name'],
             publisher=row['publisher'],
             author=row['author'],
-            publication_date=row['publication_date'],
+            publication_date=publication_date,
             pages=int(row['pages']),
             isbn=row['isbn'],
             description=row['description'],
