@@ -8,16 +8,18 @@
   <title>register</title>
 </head>
 <body>
-{% block scripts %}
 <script>
     function regist() {
       let user_name = $("#user_name").val()
       let user_email = $("#user_email").val()
       let password = $("#password").val()
       let password2 = $("#password2").val()
-      //js파일에서 구현한거 연동되는지 확인!
       if (password != password2) {
           alert("비밀번호가 일치하는지 다시 확인해 주세요!")
+          return;
+      }
+      if (len(password) < 8){
+          alert("비밀번호는 8자리 이상입니다.")
           return;
       }
       $.ajax({
@@ -43,8 +45,6 @@
       });
     }
 </script>
-{% endblock %}
-
 <div class="container">
   <form action="{{ url_for('user.register') }}" method="post" id="form" class="form">
     <h2>Register Elice Library</h2>
@@ -76,6 +76,6 @@
   </form>
 </div>
 
-<!-- <script src="../static/js/register.js"></script> -->
+<script src="../static/js/register.js"></script>
 </body>
 </html>

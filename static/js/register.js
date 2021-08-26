@@ -1,6 +1,6 @@
 const form = document.getElementById('form');
-const username = document.getElementById('username');
-const email = document.getElementById('email');
+const username = document.getElementById('user_name');
+const email = document.getElementById('user_email');
 const password = document.getElementById('password');
 const password2 = document.getElementById('password2');
 
@@ -73,15 +73,13 @@ function getFieldName(input) {
 
 // Event listeners
 form.addEventListener('submit', function(e) {
-  // e.preventDefault();
+  e.preventDefault();
 
   if(!checkRequired([username, email, password, password2])){
     checkLength(username, 3, 20);
     checkLength(password, 8, 16);
     checkEmail(email);
     checkPasswordsMatch(password, password2);
-  }else{
-    //다 알맞게 통과하면
-    regist()
   }
+  
 });

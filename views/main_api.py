@@ -38,6 +38,7 @@ def book_list():
             db.session.add(rental_info)
             db.session.commit()
             flash(f'{book.name}을 대여했습니다.')
+
         return redirect('/')
         # return jsonify({"result": "success"})
 
