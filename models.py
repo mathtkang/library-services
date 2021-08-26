@@ -9,39 +9,39 @@ from datetime import datetime
 '''
 
 
-# 도서관 유저 테이블
+# 도서관 사용자 테이블
 class LibraryUser(db.Model):
 
     __tablename__ = 'libraryUser'
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    email = db.Column(db.String(255), nullable=False)
+    user_name = db.Column(db.String(20), nullable=False)
+    user_email = db.Column(db.String(255), nullable=False)
     password = db.Column(db.String(255), nullable=False)
-    name = db.Column(db.String(20), nullable=False)
 
-    def __init__(self, name, email, passeword):
-        self.name = name
-        self.email = email
+    def __init__(self, user_name, user_email, password):
+        self.user_name = user_name
+        self.user_email = user_email
         self.password = password
 
 
-# 전체 책 목록 테이블
+# 도서관 전체 책 목록 테이블
 class LibraryBook(db.Model):
 
     __tablename__ = 'libraryBook'
 
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
-    book_name = db.Column(db.String(255), nullable=False)  # 책이름
-    publisher = db.Column(db.String(255), nullable=False)  # 출판사
-    author = db.Column(db.String(255), nullable=False)  # 저자
-    publication_date = db.Column(db.Date, nullable=False)  # 출간일
-    pages = db.Column(db.Integer, nullable=False)  # 페이지 수
-    isbn = db.Column(db.Integer, nullable=False)  # ISBN 코드
-    description = db.Column(db.Text(), nullable=False)  # 책 소개
-    star = db.Column(db.Integer, nullable=False)  # 별점
-    img_link = db.Column(db.String(255), nullable=False)  # 이미지
-    rental_val = db.Column(db.Integer, nullable=False)  # 총 대여 횟수
-    remaining = db.Column(db.Integer, nullable=False)  # 재고
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    book_name = db.Column(db.String(255))  # 책이름
+    publisher = db.Column(db.String(255))  # 출판사
+    author = db.Column(db.String(255))  # 저자
+    publication_date = db.Column(db.Date)  # 출간일
+    pages = db.Column(db.Integer)  # 페이지 수
+    isbn = db.Column(db.String(30))  # ISBN 코드
+    description = db.Column(db.Text)  # 책 소개
+    star = db.Column(db.Integer)  # 별점
+    img_link = db.Column(db.String(255))  # 이미지
+    rental_val = db.Column(db.Integer)  # 총 대여 횟수
+    remaining = db.Column(db.Integer)  # 재고
 
 
 # 책 소개 페이지의 댓글 테이블
@@ -51,12 +51,11 @@ class LibraryReview(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     user_name = db.Column(db.String(255), nullable=False)
     user_email = db.Column(db.String(255), nullable=False)
-    content = db.Column(db.Text(), nullable=False)
+    content = db.Column(db.Text(), nullable=False)  # 댓글 내용
     rating = db.Column(db.Integer, nullable=False)  # 평가 별점
     book_id = db.Column(db.Integer, db.ForeignKey(
         'libraryBook.id'), nullable=False)
     write_time = db.Column(db.DateTime, default=datetime.utcnow())  # 작성 시간
-    # user_email_code = db.Column(db.String(255), nullable=False)  # 앞뒤로 **표시
 
     def __init__(self, user_name, user_email, content, rating, book_id, write_time):
         self.user_name = user_name
@@ -65,12 +64,11 @@ class LibraryReview(db.Model):
         self.rating = rating
         self.book_id = book_id
         self.write_time = write_time
-        # self.user_email_code = user_email_code
 
 
 # 책 대여 현황 테이블
-class RentalBook(db.Model):
-    __tablename__ = 'rentalBook'
+class UserRentBook(db.Model):
+    __tablename__ = 'userRentBook'
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     user_email = db.Column(db.Integer, nullable=False)
@@ -79,9 +77,13 @@ class RentalBook(db.Model):
     rental_date = db.Column(db.Date, nullable=False)  # 대여 일자
     return_date = db.Column(db.Date, nullable=False)  # 반납 일자
     book_data = db.relationship(
-        'LibraryBook', foreign_keys='RentalBook.book_id')
+        'LibraryBook', foreign_keys='UserRentBook.book_id')  # UserRentBook 테이블과 LibraryBook 연결해주는 변수 (LibraryBook의 속성을 가져와 쓸 수 있도록 해준다)
 
     def __init__(self, user_email, book_id, rental_date):
         self.user_email = user_email
         self.book_id = book_id
         self.rental_date = rental_date
+
+
+if __name__ == "__main__":
+    db.create_all()
