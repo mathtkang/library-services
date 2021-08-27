@@ -1,4 +1,4 @@
-from flask import redirect, request, render_template, jsonify, Blueprint, session, g, url_for
+from flask import redirect, request, render_template, jsonify, Blueprint, session, g, url_for, flash
 from models import *
 from datetime import datetime
 

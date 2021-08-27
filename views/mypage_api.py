@@ -1,4 +1,4 @@
-from flask import redirect, request, render_template, jsonify, Blueprint, session, g, url_for
+from flask import redirect, request, render_template, jsonify, Blueprint, session, g, url_for, flash
 from models import *
 from datetime import datetime
 
@@ -15,7 +15,11 @@ bp = Blueprint('mypage', __name__, url_prefix='/')
 def mypage():
     rental_list = UserRentBook.query.filter(
         UserRentBook.user_email == session['user_email']).all()
-    # rents = UserBookRent.query.filter(UserBookRent.user_email == current_user.id)
+    # rental_list = UserBookRent.query.filter(UserBookRent.user_email == current_user.id)
+
+    if request.method == 'GET':
+        flash('마이페이지')
+        return render_template('mypage.html', rental_list=rental_list)
 
     # 반납하기
     if request.method == 'POST':
@@ -46,5 +50,3 @@ def mypage():
         # flash(f'{book.name}을 반납했습니다.') -> 변수설정 다시
         return redirect('/mypage')
         # return jsonify({"result": "success"})
-
-    return render_template('mypage.html', rental_list=rental_list)

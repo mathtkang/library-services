@@ -22,6 +22,36 @@ def register():
         password = request.form['password']
         password2 = request.form['password2']
 
+        # front에서도 구현 가능
+        if not user_name:
+            flash('이름을 입력해주세요.')
+            return render_template('register.html')
+        if not user_email:
+            flash('아이디를 입력해주세요.')
+            return render_template('register.html')
+        else:
+            try:
+                validate_email(user_email)
+            except EmailNotValidError:
+                flash('이메일 형식이 아닙니다.')
+                return render_template('register.html')
+        if not password or not password2:
+            flash('비밀번호를 입력해주세요.')
+            return render_template('register.html')
+        if password != password2:
+            flash('비밀번호가 일치하지 않습니다.')
+            return render_template('register.html')
+        if len(password) < 8:
+            flash("비밀번호는 8자리 이상입니다.")
+            return render_template('register.html')
+        if not any(char.isdigit() for char in password):
+            flash('숫자가 포함되어야합니다.')
+            return render_template('register.html')
+        special_char = '`~!@#$%^&*()_+|\\}{[]":;\'?><,./'
+        if not any(char in special_char for char in password):
+            flash('특수문자가 포함되어야합니다.')
+            return render_template('register.html')
+
         # 비밀번호 암호화
         pw_hash = bcrypt.generate_password_hash(password)
 
@@ -29,15 +59,9 @@ def register():
         user_check = LibraryUser.query.filter(
             LibraryUser.user_email == user_email).first()
         if user_check:
-            # flash("이미 존재하는 이메일입니다.")
-            # return redirect('/register')
-            jsonify({"result": "email_check"})
-
-        # 비밀번호 자릿수 확인 - front에서 해결하기
-        # if len(password) < 8:
-        #     return jsonify({"result": "pw_check"})
-            # flash("비밀번호는 8자리 이상입니다.")
-            # return redirect('/register')
+            flash("이미 존재하는 이메일입니다.")
+            return render_template('register.html')
+            # return jsonify(result='email_check')
 
         # db에 유저 생성
         user_data = LibraryUser(user_name=user_name,
@@ -45,10 +69,8 @@ def register():
         db.session.add(user_data)
         db.session.commit()
 
-        flash("회원가입이 완료되었습니다. 로그인해주세요!")
-        return redirect('/login')
-        # return jsonify({"result": "success"})
-        # jsonify 방식으로는 안된다!!
+        flash("회원가입이 완료되었습니다. 로그인해주세요!😊")
+        return redirect("/login")
 
     # get방식인 경우
     return render_template('register.html')
@@ -58,13 +80,26 @@ def register():
 def login():
     '''
     로그인
-    권한 검사 : 세션에 유저이메일 값이 없는 경우에만 아래를 실행하시오
+    권한 검사 : 세션에 유저 이메일 값이 없는 경우에만 아래를 실행하시오
     :return:
     '''
-# if session["user_email"] is None:
     if request.method == 'POST':
         user_email = request.form['user_email']
         password = request.form['password']
+
+        # front에서도 구현 가능
+        if not user_email:
+            flash('아이디를 입력해주세요.')
+            return render_template('login.html')
+        else:
+            try:
+                validate_email(user_email)
+            except EmailNotValidError:
+                flash('이메일 형식이 아닙니다.')
+                return render_template('login.html')
+        if not password:
+            flash('비밀번호를 입력해주세요.')
+            return render_template('login.html')
 
         # 사용자 db가져오기
         user_data = LibraryUser.query.filter(
@@ -74,20 +109,28 @@ def login():
         if user_data is not None:
             # 암호화된 비밀번호 일치 여부
             if bcrypt.check_password_hash(user_data.password, password):
+                # 세션 생성
                 session.clear()
                 session['user_name'] = user_data.user_name
                 session['user_email'] = user_data.user_email
-                return jsonify({"result": "success"})
+
+                flash("로그인 되었습니다!")  # 안나옴
+                return redirect("/")
+                # return jsonify(result='success')
+
             # 비밀번호 일치하지 않음
             else:
-                return jsonify({"result": "fail"})
+                flash("비밀번호를 다시 확인해주세요.")
+                return render_template('login.html')
+                # return jsonify({"result": "fail"})
+
         # 사용자 없음
         else:
-            return jsonify({"result": "user_none"})
+            flash("해당 아이디가 없습니다. 회원가입해주세요.")
+            return redirect("/register")
+            # return jsonify({"result": "user_none"})
     else:  # GET
-        return render_template("login.html")
-# else:
-#     return redirect("/logout")
+        return render_template('login.html')
 
 
 @bp.route('/logout')
@@ -96,4 +139,5 @@ def logout():
     로그아웃
     '''
     session.clear()
-    return redirect("/register")
+    flash("로그아웃 되었습니다.")  # 출력안됨
+    return redirect("/")

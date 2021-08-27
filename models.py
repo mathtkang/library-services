@@ -71,7 +71,7 @@ class UserRentBook(db.Model):
     __tablename__ = 'userRentBook'
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    user_email = db.Column(db.Integer, nullable=False)
+    user_email = db.Column(db.String(255), nullable=False)
     book_id = db.Column(db.Integer, db.ForeignKey(
         'libraryBook.id'), nullable=False)
     rental_date = db.Column(db.Date, nullable=False)  # 대여 일자

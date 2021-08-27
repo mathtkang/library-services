@@ -1,6 +1,15 @@
+{% with messages = get_flashed_messages() %}
+{% if messages %} 
+<script> 
+    alert("{{messages[0]}}") 
+</script> 
+{% endif %} 
+{% endwith %}
+
 {% extends "_base.html" %}
 
-{% block title %}전체 도서 열람 페이지{% endblock %}
+{% block title %}엘리스 도서관{% endblock %}
+
 
 {% block script %}
 <!-- <script>
@@ -33,60 +42,73 @@
 </script> -->
 {% endblock %}
 
-
+{% include "_header.html" %}
 {% block content %}
-<h2>엘리스 책 목록</h2>
-<h2>전체 도서 열람 페이지</h2>
-<!-- header : 검색 모양 -->
+
 
 {% if book_list %}
-{% for book in book_list %}
-<form method="post">
-    <div>
-        <img class="" src="../static/img_book/{{ book.img_link }}.jpg" alt="{{ book.book_name }}" style="width:430px; height:550px;">
-    </div>
-    <div>
-        <table class="book_list" style="width:85%; height:100%;margin-left:100px;">
-            <tr>
-                <th>책 이름</th>
-                <td>{{ book.book_name }}</td>
-            </tr>
-            <tr>
-                <th>평점</th>
-                <td>
-                    {% for _ in range(book.star) %}
-                        <i class="bi bi-star-fill" style="color: red;">*</i>
-                    {% endfor %}
-                    {% for _ in range(5 - book.star) %}
-                        <i class="bi bi-star" style="color: gray;">*</i>
-                    {% endfor %}
-                </td>
-            </tr>
-            <tr>
-                <th>대여 여부</th>
-                {% if book.remaining == 0 %}
-                    <td style="color: red;">현재 대여가 불가능합니다.</td>
-                {% else %}
-                    <td>{{ book.remaining }}권 남아있습니다.</td>
-                {% endif %}
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div>
-        <!-- <button 
-            onclick="rental_book('{{book.id}}')"
-        >대여하기</button>
-        <button 
-            onclick="rental_book('{{book.id}}')"
-        >자세히보기</button> -->
+<div method="post" class="container px-4 px-lg-5 mt-5">
+    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+        {% for book in book_list %}
+        <form method="post" 0class="col mb-5">
+            <div class="card h-100" style="border: 1px solid #a589f2">
+                <!-- .card {
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    min-width: 0;
+                    word-wrap: break-word;
+                    background-color: #fff;
+                    background-clip: border-box;
+                    border: 1px solid rgba(0, 0, 0, 0.125);
+                    border-radius: 0.25rem;
+                } -->
+                <div style="width:262px; height:262px; ">
+                    <!-- 450*300 -->
+                    <img class="card-img-top" src="../{{ book.img_link }}" alt="{{ book.book_name }}" style="display: block; width:70%; border-bottom: 0; margin: 0 auto; "/>
+                </div>
+                <div class="card-body p-4">
+                    <!-- .card-body {
+                        flex: 1 1 auto;
+                        padding: 1rem 1rem;
+                    }
+                    .p-4 {
+                        padding: 1.5rem !important;
+                    } -->
         
-        <input type="hidden" name="book_id" value="{{ book.id }}">
-        <input type="submit" value="대여하기" />
-        <a href="/bookDetail/{{ book_id }}" class="block mt-2">자세히보기</a>
+                    <div class="text-center">
+                        <h5 id="book_name" class="fw-bolder" style="font-size: 18px;">
+                            <!-- .fw-bolder {
+                                font-weight: bolder !important;
+                            } -->
+                            {{ book.book_name }}
+                        </h5>
+                        <div style="margin-top:15px;">
+                            {% for _ in range(book.star) %}
+                                <img width="28" src="../static/img/star_fill.png">
+                            {% endfor %}
+                            {% for _ in range(5 - book.star) %}
+                                <img width="28" src="../static/img/star_empty.png">
+                            {% endfor %}
+                        </div>
+                        <div style="padding-top:10px;">
+                            {{ book.remaining }}권 남아있습니다.
+                        </div>
+                    </div>
+                </div>
+                <!-- Product actions-->
+                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent" style="margin:0 auto;">
+                <!-- 가운데로 보내주기 -->
+                    <input type="hidden" name="book_id" value="{{ book.id }}">
+                    <button class="text-center btn btn-outline-dark mt-auto">대여하기</button>
+                    <span class="text-center"><a class="btn btn-outline-dark mt-auto" href="/bookDetail/{{ book.id }}">자세히보기</a></span>
+                </div>
+            </div>
+        </form>
+        
+        {% endfor %}
     </div>
-</form>
-{% endfor %}
+</div>
 
 {% else %}
 <div>book_list가 없습니다</div>

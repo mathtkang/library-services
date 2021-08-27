@@ -1,4 +1,4 @@
-const form = document.getElementById('form');
+const form = document.getElementById('button');
 const username = document.getElementById('user_name');
 const email = document.getElementById('user_email');
 const password = document.getElementById('password');
@@ -73,7 +73,7 @@ function getFieldName(input) {
 
 // Event listeners
 form.addEventListener('submit', function(e) {
-  e.preventDefault();
+  // e.preventDefault();
 
   if(!checkRequired([username, email, password, password2])){
     checkLength(username, 3, 20);
@@ -81,5 +81,6 @@ form.addEventListener('submit', function(e) {
     checkEmail(email);
     checkPasswordsMatch(password, password2);
   }
+  return 
   
 });

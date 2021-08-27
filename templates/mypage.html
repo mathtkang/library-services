@@ -1,44 +1,21 @@
+{% with messages = get_flashed_messages() %}
+{% if messages %} 
+<script> 
+    alert("{{messages[0]}}") 
+</script> 
+{% endif %} 
+{% endwith %}
+
+
 {% extends "_base.html" %}
 
 {% block title %}마이페이지{% endblock %}
 
-{% block scripts %}
-<script>
-// function return_book(book_id) {
-//     $.ajax({
-//         url:'/returnBook',
-//         type:'get',
-//         data:{
-//             'book_id':book_id
-//         },
-//         success: function(res) {
-//             if(res['result'] == 'success') {
-//                 if(confirm("대여중인 도서를 반납하시겠습니까?")){
-//                     alert("반납되었습니다.")
-//                 } else {
-//                     alert("반납되지 않았습니다. 마이페이지로 돌아갑니다.")
-//                 }
-//                 window.location.href = '/mypage'
-//             } else if(res['result'] == 'none') {
-//                 alert("존재하지 않는 대여입니다.")
-//                 window.location.href = '/mypage'
-//             } else{
-//                 alert("에러 발생")
-//                 window.location.reload()
-//             }
-//         }
-//     })
-// }
-</script>
-{% endblock %}
-
-
 {% block content %}
 
 <h2>{{ session['user_name'] }} 님의 도서대여기록입니다.</h2>
-<div>
 
-<table class="table" style="width:85%; height:100%;">
+<table class="mypage-table">
     <thead>
         <tr>
             <th>대여일자</th>
@@ -55,6 +32,7 @@
         <!-- (models.py) 
             book_data = db.relationship('LibraryBook', foreign_keys='UserRentBook.book_id') -->
         <tr>
+        <!-- <tr class="active-row"> -->
             <td>{{ book.rental_date }}</td>
             <td>{{ book.book_data.img_link }}</td>
             <td>{{ book.book_data.book_name }}</td>
