@@ -1,0 +1,144 @@
+{% extends "_base.html" %}
+
+{% block title %}책 소개 페이지{% endblock %}
+
+{% block css %}
+<link rel=" shortcut icon" href="../static/favicon-library.ico">
+<link rel="icon" href="/static/favicon-library.ico">
+{% endblock %}
+
+{% block content %}
+<section class="container px-4 px-lg-5 my-5" style="width:1024px; margin: 0 auto;">
+<div class="row gx-4 gx-lg-5 align-items-center" style="padding-top:30px;">
+    <div style="flex: 0 0 auto; width:40%;">
+        <img class="card-img-top mb-5 mb-md-0" src="..{{ book_detail.img_link }}" alt="{{ book_detail.book_name }}" />
+    </div>
+    <div class="col-md-6">
+        <h1 class="display-5 fw-bolder" style="font-size:32px;">{{ book_detail.book_name }}</h1>
+        <table>
+        <tr>
+            <th>출판사</th>
+            <td>{{ book_detail.publisher }}</td>
+        </tr>
+        <tr>
+            <th>저자</th>
+            <td>{{ book_detail.author }}</td>
+        </tr>
+        <tr>
+            <th>출간일</th>
+            <td>{{ book_detail.publication_date }}</td>
+        </tr>
+        <tr>
+            <th>페이지 수</th>
+            <td>{{ book_detail.pages }} 쪽</td>
+        </tr>
+        <tr>
+            <th>ISBN 코드</th>
+            <td>{{ book_detail.isbn }}</td>
+        </tr>
+        <tr>
+            <th>평점</th>
+            <td style="margin-top:15px;">
+                {% for _ in range(book_detail.star) %}
+                    <img width="28" src="../static/img/star_fill.png">
+                {% endfor %}
+                {% for _ in range(5 - book_detail.star) %}
+                    <img width="28" src="../static/img/star_empty.png">
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <th>총 대여 횟수</th>
+            <td>{{ book_detail.rental_val }} 회</td>
+        </tr>
+        <tr>
+            <th>재고</th>
+            {% if book_detail.remaining == 0 %}
+                <td style="color: red;">재고 없음</td>
+            {% else %}
+                <td>{{book_detail.remaining}} 권 남음</td>
+            {% endif %}
+            </td>
+        </tr>
+    </table>
+    </div>
+</div>
+
+<hr>
+<div class="row" style="margin:0 auto; padding-top:20px">
+    <h2>책 소개</h2>
+    <div>
+        <p>{{ book_detail.description }}</p>
+    </div>
+</div>
+
+<!-- 대여하기 버튼 -->
+<!-- <div class="">
+    <input type="submit" value="대여하기" />
+</div> -->
+
+<hr>
+<!-- 댓글 작성하기 : 로그인된 유저만 -->
+{% if session['user_email'] %}
+<div class="row" style="margin:0 auto; padding-top:20px">
+    <h2 style="font-size: 30px;">댓글</h2>
+    <form method="post" class="" style="display:flex; margin-top:10px;">
+        <div style="display:flex;">
+            <textarea name="review" placeholder="댓글을 작성하세요" rows="2" cols="95%"></textarea>
+        </div>
+        <div style="display:flex; margin-left:10px;">
+            <select name="rating">
+                <option value="1">1점</option>
+                <option value="2">2점</option>
+                <option value="3">3점</option>
+                <option value="4">4점</option>
+                <option value="5">5점</option>
+            </select>
+            <input type="submit" value="확인" style="margin-left:5px;">
+        </div>
+    </form>
+</div>
+
+{% endif %}
+<!-- 지금까지 작성된 댓글 보여주기 -->
+<div class="row" style="margin:0 auto; padding-top:20px">
+    {% for review in review_list %}
+    <!-- book_detial_api -->
+    <div class="all_review">
+        <div>
+            <span>{{ review.user_name }}</span>
+            <span class="bar">|</span>
+            <span>{{ review.user_email }}</span>
+            <span class="bar">|</span>
+            <span>{{ review.write_time }}</span>
+            <span class="bar">|</span>
+            <span>
+            {% for _ in range(review.rating) %}
+                <img width="16" src="../static/img/star_fill.png">
+            {% endfor %}
+            {% for _ in range(5 - (review.rating)) %}
+                <img width="16" src="../static/img/star_empty.png">
+            {% endfor %}
+            </span>
+            
+            <!-- 수정하기 삭제하기 버튼 : 작성한 유저만 사용 가능 -->
+            <!-- {% if session['user_email'] == review.user_email %}
+            <span style="float: right;">
+                <input type="button" value="수정하기" style="margin-left:5px;">
+                <input type="button" value="삭제하기" style="margin-left:5px;">
+            </span>
+            {% endif %} -->
+        </div>
+        <div class="review_content" style="font-size:16px; margin-top:5px;">
+            {{ review.content }}
+        </div>
+        <hr>
+    </div>
+    {% endfor %}
+</div>
+
+
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,126 @@
+{% with messages = get_flashed_messages() %}
+{% if messages %} 
+<script> 
+    alert("{{messages[0]}}") 
+</script> 
+{% endif %} 
+{% endwith %}
+
+{% extends "_base.html" %}
+
+{% block title %}마이페이지{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="../static/css/mypage.css" />
+<link rel=" shortcut icon" href="../static/favicon-library.ico">
+<link rel="icon" href="/static/favicon-library.ico">
+{% endblock %}
+
+{% block content %}
+
+<!-- {% if rental_list %}
+<form method="post" class="row container px-4 px-lg-5" style="margin:0 auto;">
+<h2 style="margin-top:50px;">📚 {{ session['user_name'] }} 님의 도서대여기록입니다.</h2>
+<table class="styled-table" style="text-align: center; font-size: 16px;">
+    <thead>
+        <tr style="text-align: center; ">
+            <th>No.</th>
+            <th>책 제목</th>
+            <th>평  점</th>
+            <th>대여횟수</th>
+            <th>대여일자</th>
+            <th>반납일자</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in rental_list %}
+        <tr>
+            <td>{{ book.book_data.id }}</td>
+            <td>{{ book.book_data.book_name }}</td>
+            <td>
+                {% for _ in range(book.book_data.star ) %}
+                    <img width="28" src="../static/img/star_fill.png">
+                {% endfor %}
+                {% for _ in range(5-book.book_data.star ) %}
+                    <img width="28" src="../static/img/star_empty.png">
+                {% endfor %}
+            </td>
+            <td>{{ book.book_data.rental_val }}</td>
+            <td>{{ book.rental_date }}</td>
+
+            {% if book.return_date == None %}
+            <td>아래의 목록에서 반납해주세요😊</td>
+            {% else %}
+            <td>{{ book.return_date }}</td>
+            {% endif %}
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</form>
+{% endif %} -->
+
+{% if rental_list %}
+<form method="post" class="row container px-4 px-lg-5" style="margin:0 auto;">
+<h2 style="margin-top:50px;">📖 {{ session['user_name'] }} 님이 빌리신 책 목록 입니다.</h2>
+<table class="styled-table" style="text-align: center; font-size: 16px;">
+    <thead>
+        <tr style="text-align: center; ">
+            <th>대여일자</th>
+            <!-- <th>ISBN 코드</th> -->
+            <th>책 제목</th>
+            <th>평  점</th>
+            <th>대여횟수</th>
+            <th>반납하기</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in rental_list %}
+        <tr>
+            <td>{{ book.rental_date }}</td>
+            <!-- <td>{{ book.book_data.isbn }}</td> -->
+            <td>{{ book.book_data.book_name }}</td>
+            <td>
+                {% for _ in range(book.book_data.star ) %}
+                    <img width="28" src="../static/img/star_fill.png">
+                {% endfor %}
+                {% for _ in range(5-book.book_data.star ) %}
+                    <img width="28" src="../static/img/star_empty.png">
+                {% endfor %}
+            </td>
+            <td>{{ book.book_data.rental_val }}</td>
+            <td>
+                <input type="hidden" name="book_id" value="{{ book.id }}">
+                <input type="submit" value="반납하기" />
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</form>
+
+{% else %}
+<div class="row container px-4 px-lg-5" style="margin:0 auto;">
+    <h2 style="margin-top:50px;">📖 {{ session['user_name'] }} 님이 대여한 책이 없습니다.</h2>
+</div>
+{% endif %}
+
+<div id="container" class="row container px-4 px-lg-5" style="margin:0 auto;">
+    <div id="notice">
+        <h4 style="margin-top:50px; padding-bottom: 10px;">⭐️ 자료 대출 • 반납</h4>
+        <p>• 소속도서관에서 자료 대출·자료 반납</p>
+        <p>• 대출기간 : 소속도서관에 자료가 도착한 날로부터 14일</p>
+        </p>
+        <h4 style="margin-top:50px; padding-bottom: 10px;">⭐️ 대출 연장 및 연체 안내</h4>
+        <p>• 대출 연장 : 공공도서관 자료에 한하여 1회 7일간 연장 가능</p>
+        <p>• 자료 연체 시 상호대차서비스(책바다) 이용 정지</p>
+        <p>　 - 연체일이 29일 이하 : 연체일 수(대출자료 수 X 연체일 수)만큼 서비스 이용 정지</p>
+        <p>　 - 연체일이 30일 이상 : 자료반납일로부터 6개월 간 서비스 이용 정지</p>
+        <p>• 대학도서관 자료 연체 : 연체일 수(대출자료 수 X 연체일 수) 당 연체료 500원 부과 (토요일, 일요일, 공휴일 제외)</p>
+        <h4 style="margin-top:50px; padding-bottom: 10px;">⭐️ 연체료 납부방법</h4>
+        <p>• 대학도서관 자료 연체 시, 소속도서관에 연체료를 납부하거나 소속도서관으로부터 입금계좌를 안내 받아 입금</p>
+        <div style="margin-bottom:200px;"></div>
+    </div>
+</div>
+{% endblock %}
