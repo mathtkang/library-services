@@ -45,6 +45,7 @@ def book_list():
         # 책의 재고가 존재하는 경우
         else:
             book_info.remaining -= 1  # 재고
+            book_info.rental_val += 1  # 재고
 
             now = datetime.now()
             rental_date = now.strftime('%Y-%m-%d %H:%M:%S')

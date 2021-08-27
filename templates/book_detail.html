@@ -116,10 +116,10 @@
             <span>{{ review.write_time }}</span>
             <span class="bar">|</span>
             <span>
-            {% for _ in range(review.rating-1) %}
+            {% for _ in range(review.rating) %}
                 <img width="16" src="../static/img/star_fill.png">
             {% endfor %}
-            {% for _ in range(5 - (review.rating-1)) %}
+            {% for _ in range(5 - (review.rating)) %}
                 <img width="16" src="../static/img/star_empty.png">
             {% endfor %}
             </span>

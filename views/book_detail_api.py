@@ -43,18 +43,18 @@ def book_detail(book_id):
         # 댓글 작성이 올바르게 된 경우 : db에 추가
         review_data = LibraryReview(
             user_name=session['user_name'], user_email=session['user_email'],
-            content=content, rating=rating+1, book_id=book_id, write_time=write_time)
+            content=content, rating=rating, book_id=book_id, write_time=write_time)
 
         db.session.add(review_data)
 
         # 평점 작성에 맞춰서 평점 평균 구하기
         comments = LibraryReview.query.filter(
-            LibraryReview.book_id == book_detail.id)  # ?? book_detail.id -> book_id
+            LibraryReview.book_id == book_detail.id).all()  # ?? book_detail.id -> book_id
         rating_sum = 0
         for comment in comments:
             rating_sum += comment.rating
-        book_rating = int(rating_sum / len(comments.all()))
-        book_detail.rating = book_rating
+        book_rating = int(rating_sum / len(comments))
+        book_detail.star = book_rating
 
         db.session.commit()
 

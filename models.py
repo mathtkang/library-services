@@ -44,6 +44,25 @@ class LibraryBook(db.Model):
     remaining = db.Column(db.Integer)  # 재고
 
 
+# 책 대여 현황 테이블
+class UserRentBook(db.Model):
+    __tablename__ = 'userRentBook'
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    user_email = db.Column(db.String(255), nullable=False)
+    book_id = db.Column(db.Integer, db.ForeignKey(
+        'libraryBook.id'), nullable=False)
+    rental_date = db.Column(db.Date)  # 대여 일자
+    return_date = db.Column(db.Date)  # 반납 일자
+    book_data = db.relationship(
+        'LibraryBook', foreign_keys='UserRentBook.book_id')  # UserRentBook 테이블과 LibraryBook 연결해주는 변수 (LibraryBook의 속성을 가져와 쓸 수 있도록 해준다)
+
+    def __init__(self, user_email, book_id, rental_date):
+        self.user_email = user_email
+        self.book_id = book_id
+        self.rental_date = rental_date
+
+
 # 책 소개 페이지의 댓글 테이블
 class LibraryReview(db.Model):
     __tablename__ = 'libraryReview'
@@ -64,25 +83,6 @@ class LibraryReview(db.Model):
         self.rating = rating
         self.book_id = book_id
         self.write_time = write_time
-
-
-# 책 대여 현황 테이블
-class UserRentBook(db.Model):
-    __tablename__ = 'userRentBook'
-
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
-    user_email = db.Column(db.String(255), nullable=False)
-    book_id = db.Column(db.Integer, db.ForeignKey(
-        'libraryBook.id'), nullable=False)
-    rental_date = db.Column(db.Date)  # 대여 일자
-    return_date = db.Column(db.Date)  # 반납 일자
-    book_data = db.relationship(
-        'LibraryBook', foreign_keys='UserRentBook.book_id')  # UserRentBook 테이블과 LibraryBook 연결해주는 변수 (LibraryBook의 속성을 가져와 쓸 수 있도록 해준다)
-
-    def __init__(self, user_email, book_id, rental_date):
-        self.user_email = user_email
-        self.book_id = book_id
-        self.rental_date = rental_date
 
 
 if __name__ == "__main__":
