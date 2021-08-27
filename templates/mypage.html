@@ -6,16 +6,17 @@
 {% endif %} 
 {% endwith %}
 
-
 {% extends "_base.html" %}
 
 {% block title %}마이페이지{% endblock %}
 
 {% block content %}
 
-<h2>{{ session['user_name'] }} 님의 도서대여기록입니다.</h2>
+<h2 style="margin-top:100px;">{{ session['user_name'] }} 님의 도서대여기록입니다.</h2>
 
-<table class="mypage-table">
+{% if rental_list %}
+<form method="post">
+<table class="">
     <thead>
         <tr>
             <th>대여일자</th>
@@ -37,20 +38,36 @@
             <td>{{ book.book_data.img_link }}</td>
             <td>{{ book.book_data.book_name }}</td>
             <td>{{ book.book_data.rental_val }}</td>
+
             <!-- 반납일자 : 있으면 반납일자를 보여주고, 없다면 반납하기 버튼 -->
             {% if book.return_date %}
             <td>{{ book.return_date }}</td>
             {% else %}
             <td>
-                <!-- <button onclick="return_book('{{ book.book_id }}')">반납하기</button> -->
                 <input type="hidden" name="book_id" value="{{ book.id }}">
                 <input type="submit" value="반납하기" />
+                <!-- <button>반납하기</button> -->
             </td>
             {% endif %}
         </tr>
         {% endfor %}
     </tbody>
 </table>
+</form>
+{% else %}
+<div>book_list가 없습니다</div>
+{% endif %}
+
+
 </div>
 
+
+<!-- 반납을 잘 해달라는 공지 -->
+<div id="container">
+    <div id="notice">
+
+    </div>
+
+
+</div>
 {% endblock %}

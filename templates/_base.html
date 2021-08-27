@@ -6,7 +6,7 @@
     <title>{% block title %}{% endblock %}</title>
     
     <!-- Favicon-->
-    <link rel="icon" type="image/x-icon" href="static/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="../static/favicon.ico" />
     
     <!-- Core theme CSS (includes Bootstrap)-->
     <link rel="stylesheet" href="/static/css/bootstrap.min.css" />
@@ -20,11 +20,10 @@
 </head>
 
 <body>
-<!-- Navigation-->
-{% include "_navbar.html" %} 
-<!-- {% include "_header.html" %} -->
+<!-- Navbar-->
+{% include "_navbar.html" %}
 <div class="container">
-    <div>
+    <div style="margin-top:80px;">
     <!-- 각 페이지의 내용이 들어감 -->
     {% block content %} 
     {% endblock %}

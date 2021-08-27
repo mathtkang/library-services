@@ -26,17 +26,10 @@ def book_list():
 
         # 책 정보
         book_info = LibraryBook.query.filter(LibraryBook.id == book_id).first()
-        now = datetime.now()
-        rental_date = now.strftime('%Y-%m-%d %H:%M:%S')
 
-        # 책의 재고가 0인 경우
-        if book_info.remaining == 0:
-            flash('재고가 없어서 대여할 수 없습니다. 다른 책을 대여해주세요.')
-            return render_template("main.html", book_list=book_list)
-        # 책의 재고가 존재하는 경우
-        else:
-            book_info.remaining -= 1  # 재고
-            book_info.rental_val += 1  # 대여횟수
+        if book_info is None:
+            flash('대출하려는 책을 찾을 수 없습니다.')
+            return render_template('main.html', book_list=book_list)
 
         # 이미 대여한 책인 경우
         rental_info = UserRentBook.query.filter(UserRentBook.return_date == None).filter(
@@ -46,9 +39,24 @@ def book_list():
                 flash('이미 대여한 책입니다. 마이페이지에서 확인해주세요.')
                 return redirect('/mypage')
 
-        db.session.add(book_info)
-        db.session.commit()
-        flash(f'{book_info.book_name}을 대여했습니다.')
+        # 책의 재고가 0인 경우
+        if book_info.remaining == 0:
+            flash('재고가 없어서 대여할 수 없습니다. 다른 책을 대여해주세요.')
+        # 책의 재고가 존재하는 경우
+        else:
+            book_info.remaining -= 1  # 재고
+
+            now = datetime.now()
+            rental_date = now.strftime('%Y-%m-%d %H:%M:%S')
+
+            rent_book = UserRentBook(
+                user_email=session['user_email'], book_id=book_id, rental_date=rental_date)
+
+            db.session.add(rent_book)
+            db.session.commit()
+            flash(f'{book_info.book_name}을 대여했습니다.')
+
         return render_template("main.html", book_list=book_list)
 
+    # GET방식인 경우
     return render_template("main.html", book_list=book_list)

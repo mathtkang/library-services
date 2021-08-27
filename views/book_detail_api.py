@@ -33,7 +33,7 @@ def book_detail(book_id):
         write_time = now.strftime('%Y-%m-%d %H:%M:%S')
 
         # 댓글 내용과 별점이 없는 경우
-        if not review:
+        if not content:
             flash('댓글 내용을 작성해주세요.')
             return redirect(f'/bookDetail/{book_id}')
         if not rating:

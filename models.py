@@ -74,8 +74,8 @@ class UserRentBook(db.Model):
     user_email = db.Column(db.String(255), nullable=False)
     book_id = db.Column(db.Integer, db.ForeignKey(
         'libraryBook.id'), nullable=False)
-    rental_date = db.Column(db.Date, nullable=False)  # 대여 일자
-    return_date = db.Column(db.Date, nullable=False)  # 반납 일자
+    rental_date = db.Column(db.Date)  # 대여 일자
+    return_date = db.Column(db.Date)  # 반납 일자
     book_data = db.relationship(
         'LibraryBook', foreign_keys='UserRentBook.book_id')  # UserRentBook 테이블과 LibraryBook 연결해주는 변수 (LibraryBook의 속성을 가져와 쓸 수 있도록 해준다)
 
