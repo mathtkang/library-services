@@ -6,7 +6,6 @@
 {% endif %} 
 {% endwith %}
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,46 +13,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <link rel="stylesheet" href="../static/css/register.css" />
+  <link rel=" shortcut icon" href="../static/favicon-library.ico">
+  <link rel="icon" href="/static/favicon-library.ico">
   <title>register</title>
 </head>
 <body>
-<!-- <script>
-    function regist() {
-      let user_name = $("#user_name").val()
-      let user_email = $("#user_email").val()
-      let password = $("#password").val()
-      let password2 = $("#password2").val()
-      if (password != password2) {
-          alert("비밀번호가 일치하는지 다시 확인해 주세요!")
-          return;
-      }
-      if (len(password) < 8){
-          alert("비밀번호는 8자리 이상입니다.")
-          return;
-      }
-      $.ajax({
-          url: '/register',
-          type: 'post',
-          data: {
-              'user_name': user_name,
-              'user_email': user_email,
-              'password': password,
-              'password2': password2
-          },
-          success: function (res) {
-              if (res['result'] == 'success') {
-                  alert("회원가입이 완료되었습니다. 이제 로그인해주세요!");
-                  window.location.href = '/login'
-              } else if (res['result'] == 'email_check') {
-                  alert("이미 존재하는 이메일입니다.")
-                  window.location.href = '/register'
-              // } else if (res['result'] == 'pw_check') {
-              //     alert("비밀번호는 8자리 이상이어야 합니다.")
-              } 
-          }
-      });
-    }
-</script> -->
 <div class="container">
   <form action="{{ url_for('user.register') }}" method="post" id="form" class="form">
     <h2>Register Elice Library</h2>
@@ -79,8 +43,6 @@
         type="password" name="password2" id="password2" />
       <small>Error message</small>
     </div>
-
-    <!-- <button onclick="regist()" class="submit">가입하기</button> -->
     <button id="button" class="submit" type="submit">가입하기</button>
   </form>
 </div>

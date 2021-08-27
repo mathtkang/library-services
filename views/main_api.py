@@ -4,8 +4,14 @@ from datetime import datetime
 
 bp = Blueprint('main', __name__, url_prefix='/')
 
+'''
+보여지는 화면 : main.html
+1. GET : 도서관의 책 전체 리스트 반환
+2. POST : 대여하기 버튼 클릭시 이미 빌린 도서는 마이페이지로 연동
+'자세히보기' 버튼 클릭시 /bookDetail/<int:book_id> 로 넘겨줌
+'''
 
-# 도서관의 책 전체 리스트 반환 - main.html
+
 @bp.route("/", methods=['GET', 'POST'])
 def book_list():
     book_list = LibraryBook.query.all()

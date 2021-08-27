@@ -13,8 +13,9 @@ bcrypt = Bcrypt()
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
     '''
-    회원가입
-    :return:
+    보여지는 화면 : register.html
+    1. GET : 회원가입
+    2. POST : user db와 비교해서 새로운 유저 생성
     '''
     if request.method == 'POST':
         user_name = request.form['user_name']
@@ -79,9 +80,11 @@ def register():
 @bp.route('/login', methods=["GET", "POST"])
 def login():
     '''
-    로그인
-    권한 검사 : 세션에 유저 이메일 값이 없는 경우에만 아래를 실행하시오
-    :return:
+    보여지는 화면 : login.html
+    1. GET : 로그인
+    2. POST : user db와 비교해서 로그인 성공
+    권한 검사 아직 X : 세션에 유저 이메일 값이 없는 경우에만 실행하도록
+    구현하고 싶은 부분 : 체크박스 클릭시 다음번 로그인시 세션 유지
     '''
     if request.method == 'POST':
         user_email = request.form['user_email']
@@ -137,7 +140,8 @@ def login():
 def logout():
     '''
     로그아웃
+    세션에서 사용자 정보 지워준다.
     '''
     session.clear()
-    flash("로그아웃 되었습니다.")  # 출력안됨
+    flash("로그아웃 되었습니다.")
     return redirect("/")

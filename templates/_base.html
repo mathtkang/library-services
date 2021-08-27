@@ -2,29 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <!-- 각 html 페이지 타이틀  -->
+    <!-- Title  -->
     <title>{% block title %}{% endblock %}</title>
-    
     <!-- Favicon-->
-    <link rel="icon" type="image/x-icon" href="../static/favicon.ico" />
-    
-    <!-- Core theme CSS (includes Bootstrap)-->
+    <!-- <link rel="icon" type="image/x-icon" href="../static/favicon.ico" /> -->
+    <link rel=" shortcut icon" href="../static/favicon-library.ico">
+    <link rel="icon" href="/static/favicon-library.ico">
+    <!-- CSS (includes Bootstrap)-->
     <link rel="stylesheet" href="/static/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="/static/css/my_styles.css" />
     {% block css %}
     {% endblock %}
-    
     <!-- Script -->
     {% block script %}
     {% endblock %}
 </head>
-
 <body>
 <!-- Navbar-->
 {% include "_navbar.html" %}
 <div class="container">
     <div style="margin-top:80px;">
-    <!-- 각 페이지의 내용이 들어감 -->
+    <!-- Content -->
     {% block content %} 
     {% endblock %}
     </div>
